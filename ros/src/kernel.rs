@@ -3,7 +3,7 @@
 
 use core::ops::Add;
 use core::panic::PanicInfo;
-use core::ptr::write_volatile;
+//use core::ptr::write_volatile;
 
 #[panic_handler]
 fn panic(_panic:&PanicInfo)->!{
@@ -76,8 +76,8 @@ impl Terminal{
       for y in 0..VgaHeight{
          for x in 0..VgaWidth{
             let index=y*VgaWidth+x;
-            write_volatile(self.terminal_buffer.add(index), vga_entry(b' ', self.terminal_color));
-            //*(self.terminal_buffer.add(index))=vga_entry(b' ',self.terminal_color);
+            //write_volatile(self.terminal_buffer.add(index), vga_entry(b' ', self.terminal_color));
+            *(self.terminal_buffer.add(index))=vga_entry(b' ',self.terminal_color);
          }
       }
    }
@@ -113,7 +113,7 @@ impl Terminal{
 pub unsafe  extern "C" fn kernel_main(){
    let mut terminal=Terminal::default_new();
    terminal.TerminalInit();
-   let msg=b"Hello, World\n";
+   let msg=b"Hello, World";
    terminal.TerminalWriteString(msg.as_ptr(),msg.len());
 }
 
