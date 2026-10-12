@@ -1,0 +1,17 @@
+[package]
+name = "ros"
+version = "0.1.0"
+edition = "2024"
+build="build.rs"
+
+[[bin]]
+name = "ros"
+path = "src/kernel.rs"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
+[dependencies]
