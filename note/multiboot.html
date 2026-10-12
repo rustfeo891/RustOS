@@ -1,0 +1,2379 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- Copyright (C) 1995,96 Bryan Ford <baford@cs.utah.edu>
+
+Copyright (C) 1995,96 Erich Stefan Boleyn <erich@uruk.org>
+
+Copyright (C) 1999,2000,2001,2002,2005,2006,2009,2010 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified
+versions. -->
+<!-- Created by GNU Texinfo 6.3, http://www.gnu.org/software/texinfo/ -->
+<head>
+<title>Multiboot Specification version 0.6.96</title>
+
+<meta name="description" content="Multiboot Specification version 0.6.96">
+<meta name="keywords" content="Multiboot Specification version 0.6.96">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="#Top" rel="start" title="Top">
+<link href="#Index" rel="index" title="Index">
+<link href="#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="dir.html#Top" rel="up" title="(dir)">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+blockquote.smallindentedblock {margin-right: 0em; font-size: smaller}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<h1 class="settitle" align="center">Multiboot Specification version 0.6.96</h1>
+
+
+
+
+
+
+<a name="Top"></a>
+<div class="header">
+<p>
+Next: <a href="#Overview" accesskey="n" rel="next">Overview</a>, Up: <a href="dir.html#Top" accesskey="u" rel="up">(dir)</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Multiboot-Specification"></a>
+<h1 class="top">Multiboot Specification</h1>
+
+<p>This file documents Multiboot Specification, the proposal for the boot
+sequence standard. This edition documents version 0.6.96.
+</p>
+<p>Copyright &copy; 1995,96 Bryan Ford &lt;baford@cs.utah.edu&gt;
+</p>
+<p>Copyright &copy; 1995,96 Erich Stefan Boleyn &lt;erich@uruk.org&gt;
+</p>
+<p>Copyright &copy; 1999,2000,2001,2002,2005,2006,2009,2010 Free Software Foundation, Inc.
+</p>
+<blockquote>
+<p>Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+</p>
+
+<p>Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+</p>
+<p>Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified
+versions.
+</p></blockquote>
+
+
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="#Overview" accesskey="1">Overview</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Terminology" accesskey="2">Terminology</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Specification" accesskey="3">Specification</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Examples" accesskey="4">Examples</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#History" accesskey="5">History</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Invoking-mbchk" accesskey="6">Invoking mbchk</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">How to use the Multiboot checker
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Index" accesskey="7">Index</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+
+<hr>
+<a name="Overview"></a>
+<div class="header">
+<p>
+Next: <a href="#Terminology" accesskey="n" rel="next">Terminology</a>, Previous: <a href="#Top" accesskey="p" rel="prev">Top</a>, Up: <a href="#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Introduction-to-Multiboot-Specification"></a>
+<h2 class="chapter">1 Introduction to Multiboot Specification</h2>
+
+<p>This chapter describes some rough information on the Multiboot
+Specification. Note that this is not a part of the specification itself.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="#Motivation" accesskey="1">Motivation</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Architecture" accesskey="2">Architecture</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Operating-systems" accesskey="3">Operating systems</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Boot-sources" accesskey="4">Boot sources</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Boot_002dtime-configuration" accesskey="5">Boot-time configuration</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Convenience-to-operating-systems" accesskey="6">Convenience to operating systems</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Boot-modules" accesskey="7">Boot modules</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+
+<hr>
+<a name="Motivation"></a>
+<div class="header">
+<p>
+Next: <a href="#Architecture" accesskey="n" rel="next">Architecture</a>, Up: <a href="#Overview" accesskey="u" rel="up">Overview</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="The-background-of-Multiboot-Specification"></a>
+<h3 class="section">1.1 The background of Multiboot Specification</h3>
+
+<p>Every operating system ever created tends to have its own boot loader.
+Installing a new operating system on a machine generally involves
+installing a whole new set of boot mechanisms, each with completely
+different install-time and boot-time user interfaces. Getting multiple
+operating systems to coexist reliably on one machine through typical
+<em>chaining</em> mechanisms can be a nightmare. There is little or no
+choice of boot loaders for a particular operating system &mdash; if the one
+that comes with the operating system doesn&rsquo;t do exactly what you want,
+or doesn&rsquo;t work on your machine, you&rsquo;re screwed.
+</p>
+<p>While we may not be able to fix this problem in existing proprietary
+operating systems, it shouldn&rsquo;t be too difficult for a few people in the
+free operating system communities to put their heads together and solve
+this problem for the popular free operating systems. That&rsquo;s what this
+specification aims for. Basically, it specifies an interface between a
+boot loader and a operating system, such that any complying boot loader
+should be able to load any complying operating system. This
+specification does <em>not</em> specify how boot loaders should work &mdash;
+only how they must interface with the operating system being loaded.
+</p>
+
+<hr>
+<a name="Architecture"></a>
+<div class="header">
+<p>
+Next: <a href="#Operating-systems" accesskey="n" rel="next">Operating systems</a>, Previous: <a href="#Motivation" accesskey="p" rel="prev">Motivation</a>, Up: <a href="#Overview" accesskey="u" rel="up">Overview</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="The-target-architecture"></a>
+<h3 class="section">1.2 The target architecture</h3>
+
+<p>This specification is primarily targeted at <small>PC</small>, since they are the
+most common and have the largest variety of operating systems and boot
+loaders. However, to the extent that certain other architectures may
+need a boot specification and do not have one already, a variation of
+this specification, stripped of the x86-specific details, could be
+adopted for them as well.
+</p>
+
+<hr>
+<a name="Operating-systems"></a>
+<div class="header">
+<p>
+Next: <a href="#Boot-sources" accesskey="n" rel="next">Boot sources</a>, Previous: <a href="#Architecture" accesskey="p" rel="prev">Architecture</a>, Up: <a href="#Overview" accesskey="u" rel="up">Overview</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="The-target-operating-systems"></a>
+<h3 class="section">1.3 The target operating systems</h3>
+
+<p>This specification is targeted toward free 32-bit operating systems
+that can be fairly easily modified to support the specification without
+going through lots of bureaucratic rigmarole. The particular free
+operating systems that this specification is being primarily designed
+for are Linux, the kernels of FreeBSD and NetBSD, Mach, and VSTa. It is hoped that other
+emerging free operating systems will adopt it from the start, and thus
+immediately be able to take advantage of existing boot loaders. It would
+be nice if proprietary operating system vendors eventually adopted this
+specification as well, but that&rsquo;s probably a pipe dream.
+</p>
+
+<hr>
+<a name="Boot-sources"></a>
+<div class="header">
+<p>
+Next: <a href="#Boot_002dtime-configuration" accesskey="n" rel="next">Boot-time configuration</a>, Previous: <a href="#Operating-systems" accesskey="p" rel="prev">Operating systems</a>, Up: <a href="#Overview" accesskey="u" rel="up">Overview</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Boot-sources-1"></a>
+<h3 class="section">1.4 Boot sources</h3>
+
+<p>It should be possible to write compliant boot loaders that load the OS
+image from a variety of sources, including floppy disk, hard disk, and
+across a network.
+</p>
+<p>Disk-based boot loaders may use a variety of techniques to find the
+relevant OS image and boot module data on disk, such as by
+interpretation of specific file systems (e.g. the BSD/Mach boot loader),
+using precalculated <em>blocklists</em> (e.g. LILO), loading from a
+special <em>boot partition</em> (e.g. OS/2), or even loading from within
+another operating system (e.g. the VSTa boot code, which loads from
+DOS). Similarly, network-based boot loaders could use a variety of
+network hardware and protocols.
+</p>
+<p>It is hoped that boot loaders will be created that support multiple
+loading mechanisms, increasing their portability, robustness, and
+user-friendliness.
+</p>
+
+<hr>
+<a name="Boot_002dtime-configuration"></a>
+<div class="header">
+<p>
+Next: <a href="#Convenience-to-operating-systems" accesskey="n" rel="next">Convenience to operating systems</a>, Previous: <a href="#Boot-sources" accesskey="p" rel="prev">Boot sources</a>, Up: <a href="#Overview" accesskey="u" rel="up">Overview</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Configure-an-operating-system-at-boot_002dtime"></a>
+<h3 class="section">1.5 Configure an operating system at boot-time</h3>
+
+<p>It is often necessary for one reason or another for the user to be able
+to provide some configuration information to an operating system
+dynamically at boot time. While this specification should not dictate
+how this configuration information is obtained by the boot loader, it
+should provide a standard means for the boot loader to pass such
+information to the operating system.
+</p>
+
+<hr>
+<a name="Convenience-to-operating-systems"></a>
+<div class="header">
+<p>
+Next: <a href="#Boot-modules" accesskey="n" rel="next">Boot modules</a>, Previous: <a href="#Boot_002dtime-configuration" accesskey="p" rel="prev">Boot-time configuration</a>, Up: <a href="#Overview" accesskey="u" rel="up">Overview</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="How-to-make-OS-development-easier"></a>
+<h3 class="section">1.6 How to make OS development easier</h3>
+
+<p>OS images should be easy to generate. Ideally, an OS image should simply
+be an ordinary 32-bit executable file in whatever file format the
+operating system normally uses. It should be possible to <code>nm</code> or
+disassemble OS images just like normal executables. Specialized tools
+should not be required to create OS images in a <em>special</em> file
+format. If this means shifting some work from the operating system to
+a boot loader, that is probably appropriate, because all the memory
+consumed by the boot loader will typically be made available again after
+the boot process is created, whereas every bit of code in the OS image
+typically has to remain in memory forever. The operating system should
+not have to worry about getting into 32-bit mode initially, because mode
+switching code generally needs to be in the boot loader anyway in order
+to load operating system data above the 1MB boundary, and forcing the
+operating system to do this makes creation of OS images much more
+difficult.
+</p>
+<p>Unfortunately, there is a horrendous variety of executable file formats
+even among free Unix-like <small>PC</small>-based operating systems &mdash; generally
+a different format for each operating system. Most of the relevant free
+operating systems use some variant of a.out format, but some are moving
+to <small>ELF</small>. It is highly desirable for boot loaders not to have to be
+able to interpret all the different types of executable file formats in
+existence in order to load the OS image &mdash; otherwise the boot loader
+effectively becomes operating system specific again.
+</p>
+<p>This specification adopts a compromise solution to this
+problem. Multiboot-compliant OS images always contain a magic
+<em>Multiboot header</em> (see <a href="#OS-image-format">OS image format</a>), which allows the boot
+loader to load the image without having to understand numerous a.out
+variants or other executable formats. This magic header does not need to
+be at the very beginning of the executable file, so kernel images can
+still conform to the local a.out format variant in addition to being
+Multiboot-compliant.
+</p>
+
+<hr>
+<a name="Boot-modules"></a>
+<div class="header">
+<p>
+Previous: <a href="#Convenience-to-operating-systems" accesskey="p" rel="prev">Convenience to operating systems</a>, Up: <a href="#Overview" accesskey="u" rel="up">Overview</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Boot-modules-1"></a>
+<h3 class="section">1.7 Boot modules</h3>
+
+<p>Many modern operating system kernels, such as Mach and the microkernel in VSTa, do
+not by themselves contain enough mechanism to get the system fully
+operational: they require the presence of additional software modules at
+boot time in order to access devices, mount file systems, etc. While
+these additional modules could be embedded in the main OS image along
+with the kernel itself, and the resulting image be split apart manually
+by the operating system when it receives control, it is often more
+flexible, more space-efficient, and more convenient to the operating
+system and user if the boot loader can load these additional modules
+independently in the first place.
+</p>
+<p>Thus, this specification should provide a standard method for a boot
+loader to indicate to the operating system what auxiliary boot modules
+were loaded, and where they can be found. Boot loaders don&rsquo;t have to
+support multiple boot modules, but they are strongly encouraged to,
+because some operating systems will be unable to boot without them.
+</p>
+
+<hr>
+<a name="Terminology"></a>
+<div class="header">
+<p>
+Next: <a href="#Specification" accesskey="n" rel="next">Specification</a>, Previous: <a href="#Overview" accesskey="p" rel="prev">Overview</a>, Up: <a href="#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="The-definitions-of-terms-used-through-the-specification"></a>
+<h2 class="chapter">2 The definitions of terms used through the specification</h2>
+
+<dl compact="compact">
+<dt><em>must</em></dt>
+<dd><p>We use the term <em>must</em>, when any boot loader or OS image needs to
+follow a rule &mdash; otherwise, the boot loader or OS image is <em>not</em>
+Multiboot-compliant.
+</p>
+</dd>
+<dt><em>should</em></dt>
+<dd><p>We use the term <em>should</em>, when any boot loader or OS image is
+recommended to follow a rule, but it doesn&rsquo;t need to follow the rule.
+</p>
+</dd>
+<dt><em>may</em></dt>
+<dd><p>We use the term <em>may</em>, when any boot loader or OS image is allowed
+to follow a rule.
+</p>
+</dd>
+<dt><em>boot loader</em></dt>
+<dd><p>Whatever program or set of programs loads the image of the final
+operating system to be run on the machine. The boot loader may itself
+consist of several stages, but that is an implementation detail not
+relevant to this specification. Only the <em>final</em> stage of the boot
+loader &mdash; the stage that eventually transfers control to an operating
+system &mdash; must follow the rules specified in this document in order
+to be <em>Multiboot-compliant</em>; earlier boot loader stages may be
+designed in whatever way is most convenient.
+</p>
+</dd>
+<dt><em>OS image</em></dt>
+<dd><p>The initial binary image that a boot loader loads into memory and
+transfers control to start an operating system. The OS image is
+typically an executable containing the operating system kernel.
+</p>
+</dd>
+<dt><em>boot module</em></dt>
+<dd><p>Other auxiliary files that a boot loader loads into memory along with
+an OS image, but does not interpret in any way other than passing their
+locations to the operating system when it is invoked.
+</p>
+</dd>
+<dt><em>Multiboot-compliant</em></dt>
+<dd><p>A boot loader or an OS image which follows the rules defined as
+<em>must</em> is Multiboot-compliant. When this specification specifies a
+rule as <em>should</em> or <em>may</em>, a Multiboot-complaint boot loader/OS
+image doesn&rsquo;t need to follow the rule.
+</p>
+</dd>
+<dt><em>u8</em></dt>
+<dd><p>The type of unsigned 8-bit data.
+</p>
+</dd>
+<dt><em>u16</em></dt>
+<dd><p>The type of unsigned 16-bit data. Because the target architecture is
+little-endian, u16 is coded in little-endian.
+</p>
+</dd>
+<dt><em>u32</em></dt>
+<dd><p>The type of unsigned 32-bit data. Because the target architecture is
+little-endian, u32 is coded in little-endian.
+</p>
+</dd>
+<dt><em>u64</em></dt>
+<dd><p>The type of unsigned 64-bit data. Because the target architecture is
+little-endian, u64 is coded in little-endian.
+</p></dd>
+</dl>
+
+
+<hr>
+<a name="Specification"></a>
+<div class="header">
+<p>
+Next: <a href="#Examples" accesskey="n" rel="next">Examples</a>, Previous: <a href="#Terminology" accesskey="p" rel="prev">Terminology</a>, Up: <a href="#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="The-exact-definitions-of-Multiboot-Specification"></a>
+<h2 class="chapter">3 The exact definitions of Multiboot Specification</h2>
+
+<p>There are three main aspects of a boot loader/OS image interface:
+</p>
+<ol>
+<li> The format of an OS image as seen by a boot loader.
+
+</li><li> The state of a machine when a boot loader starts an operating
+system.
+
+</li><li> The format of information passed by a boot loader to an operating
+system.
+</li></ol>
+
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="#OS-image-format" accesskey="1">OS image format</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Machine-state" accesskey="2">Machine state</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Boot-information-format" accesskey="3">Boot information format</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+
+<hr>
+<a name="OS-image-format"></a>
+<div class="header">
+<p>
+Next: <a href="#Machine-state" accesskey="n" rel="next">Machine state</a>, Up: <a href="#Specification" accesskey="u" rel="up">Specification</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="OS-image-format-1"></a>
+<h3 class="section">3.1 OS image format</h3>
+
+<p>An OS image may be an ordinary 32-bit executable file in the standard
+format for that particular operating system, except that it may be
+linked at a non-default load address to avoid loading on top of the
+<small>PC</small>&rsquo;s I/O region or other reserved areas, and of course it should
+not use shared libraries or other fancy features.
+</p>
+<p>An OS image must contain an additional header called <em>Multiboot
+header</em>, besides the headers of the format used by the OS image. The
+Multiboot header must be contained completely within the first 8192
+bytes of the OS image, and must be longword (32-bit) aligned. In
+general, it should come <em>as early as possible</em>, and may be
+embedded in the beginning of the text segment after the <em>real</em>
+executable header.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="#Header-layout" accesskey="1">Header layout</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">The layout of Multiboot header
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Header-magic-fields" accesskey="2">Header magic fields</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">The magic fields of Multiboot header
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Header-address-fields" accesskey="3">Header address fields</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Header-graphics-fields" accesskey="4">Header graphics fields</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+
+<hr>
+<a name="Header-layout"></a>
+<div class="header">
+<p>
+Next: <a href="#Header-magic-fields" accesskey="n" rel="next">Header magic fields</a>, Up: <a href="#OS-image-format" accesskey="u" rel="up">OS image format</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="The-layout-of-Multiboot-header"></a>
+<h4 class="subsection">3.1.1 The layout of Multiboot header</h4>
+
+<p>The layout of the Multiboot header must be as follows:
+</p>
+<table>
+<tr><td width="10%">Offset</td><td width="10%">Type</td><td width="20%">Field Name</td><td width="50%">Note</td></tr>
+<tr><td width="10%">0</td><td width="10%">u32</td><td width="20%">magic</td><td width="50%">required</td></tr>
+<tr><td width="10%">4</td><td width="10%">u32</td><td width="20%">flags</td><td width="50%">required</td></tr>
+<tr><td width="10%">8</td><td width="10%">u32</td><td width="20%">checksum</td><td width="50%">required</td></tr>
+<tr><td width="10%">12</td><td width="10%">u32</td><td width="20%">header_addr</td><td width="50%">if flags[16] is set</td></tr>
+<tr><td width="10%">16</td><td width="10%">u32</td><td width="20%">load_addr</td><td width="50%">if flags[16] is set</td></tr>
+<tr><td width="10%">20</td><td width="10%">u32</td><td width="20%">load_end_addr</td><td width="50%">if flags[16] is set</td></tr>
+<tr><td width="10%">24</td><td width="10%">u32</td><td width="20%">bss_end_addr</td><td width="50%">if flags[16] is set</td></tr>
+<tr><td width="10%">28</td><td width="10%">u32</td><td width="20%">entry_addr</td><td width="50%">if flags[16] is set</td></tr>
+<tr><td width="10%">32</td><td width="10%">u32</td><td width="20%">mode_type</td><td width="50%">if flags[2] is set</td></tr>
+<tr><td width="10%">36</td><td width="10%">u32</td><td width="20%">width</td><td width="50%">if flags[2] is set</td></tr>
+<tr><td width="10%">40</td><td width="10%">u32</td><td width="20%">height</td><td width="50%">if flags[2] is set</td></tr>
+<tr><td width="10%">44</td><td width="10%">u32</td><td width="20%">depth</td><td width="50%">if flags[2] is set</td></tr>
+</table>
+
+<p>The fields &lsquo;<samp>magic</samp>&rsquo;, &lsquo;<samp>flags</samp>&rsquo; and &lsquo;<samp>checksum</samp>&rsquo; are defined in
+<a href="#Header-magic-fields">Header magic fields</a>, the fields &lsquo;<samp>header_addr</samp>&rsquo;,
+&lsquo;<samp>load_addr</samp>&rsquo;, &lsquo;<samp>load_end_addr</samp>&rsquo;, &lsquo;<samp>bss_end_addr</samp>&rsquo; and
+&lsquo;<samp>entry_addr</samp>&rsquo; are defined in <a href="#Header-address-fields">Header address fields</a>, and the
+fields &lsquo;<samp>mode_type</samp>&rsquo;, &lsquo;<samp>width</samp>&rsquo;, &lsquo;<samp>height</samp>&rsquo; and &lsquo;<samp>depth</samp>&rsquo; are
+defined in <a href="#Header-graphics-fields">Header graphics fields</a>.
+</p>
+
+<hr>
+<a name="Header-magic-fields"></a>
+<div class="header">
+<p>
+Next: <a href="#Header-address-fields" accesskey="n" rel="next">Header address fields</a>, Previous: <a href="#Header-layout" accesskey="p" rel="prev">Header layout</a>, Up: <a href="#OS-image-format" accesskey="u" rel="up">OS image format</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="The-magic-fields-of-Multiboot-header"></a>
+<h4 class="subsection">3.1.2 The magic fields of Multiboot header</h4>
+
+<dl compact="compact">
+<dt>&lsquo;<samp>magic</samp>&rsquo;</dt>
+<dd><p>The field &lsquo;<samp>magic</samp>&rsquo; is the magic number identifying the header,
+which must be the hexadecimal value <code>0x1BADB002</code>.
+</p>
+</dd>
+<dt>&lsquo;<samp>flags</samp>&rsquo;</dt>
+<dd><p>The field &lsquo;<samp>flags</samp>&rsquo; specifies features that the OS image requests or
+requires of an boot loader. Bits 0-15 indicate requirements; if the
+boot loader sees any of these bits set but doesn&rsquo;t understand the flag
+or can&rsquo;t fulfill the requirements it indicates for some reason, it must
+notify the user and fail to load the OS image. Bits 16-31 indicate
+optional features; if any bits in this range are set but the boot loader
+doesn&rsquo;t understand them, it may simply ignore them and proceed as
+usual. Naturally, all as-yet-undefined bits in the &lsquo;<samp>flags</samp>&rsquo; word
+must be set to zero in OS images. This way, the &lsquo;<samp>flags</samp>&rsquo; fields
+serves for version control as well as simple feature selection.
+</p>
+<p>If bit 0 in the &lsquo;<samp>flags</samp>&rsquo; word is set, then all boot modules loaded
+along with the operating system must be aligned on page (4KB)
+boundaries. Some operating systems expect to be able to map the pages
+containing boot modules directly into a paged address space during
+startup, and thus need the boot modules to be page-aligned.
+</p>
+<p>If bit 1 in the &lsquo;<samp>flags</samp>&rsquo; word is set, then information on available
+memory via at least the &lsquo;<samp>mem_*</samp>&rsquo; fields of the Multiboot information
+structure (see <a href="#Boot-information-format">Boot information format</a>) must be included. If the
+boot loader is capable of passing a memory map (the &lsquo;<samp>mmap_*</samp>&rsquo; fields)
+and one exists, then it may be included as well.
+</p>
+<p>If bit 2 in the &lsquo;<samp>flags</samp>&rsquo; word is set, information about the video
+mode table (see <a href="#Boot-information-format">Boot information format</a>) must be available to the
+kernel.
+</p>
+<p>If bit 16 in the &lsquo;<samp>flags</samp>&rsquo; word is set, then the fields at offsets
+12-28 in the Multiboot header are valid, and the boot loader should use
+them instead of the fields in the actual executable header to calculate
+where to load the OS image. This information does not need to be
+provided if the kernel image is in <small>ELF</small> format, but it <em>must</em>
+be provided if the images is in a.out format or in some other
+format. Compliant boot loaders must be able to load images that either
+are in <small>ELF</small> format or contain the load address information embedded
+in the Multiboot header; they may also directly support other executable
+formats, such as particular a.out variants, but are not required to.
+</p>
+</dd>
+<dt>&lsquo;<samp>checksum</samp>&rsquo;</dt>
+<dd><p>The field &lsquo;<samp>checksum</samp>&rsquo; is a 32-bit unsigned value which, when added
+to the other magic fields (i.e. &lsquo;<samp>magic</samp>&rsquo; and &lsquo;<samp>flags</samp>&rsquo;), must
+have a 32-bit unsigned sum of zero.
+</p></dd>
+</dl>
+
+
+<hr>
+<a name="Header-address-fields"></a>
+<div class="header">
+<p>
+Next: <a href="#Header-graphics-fields" accesskey="n" rel="next">Header graphics fields</a>, Previous: <a href="#Header-magic-fields" accesskey="p" rel="prev">Header magic fields</a>, Up: <a href="#OS-image-format" accesskey="u" rel="up">OS image format</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="The-address-fields-of-Multiboot-header"></a>
+<h4 class="subsection">3.1.3 The address fields of Multiboot header</h4>
+
+<p>All of the address fields enabled by flag bit 16 are physical addresses.
+The meaning of each is as follows:
+</p>
+<dl compact="compact">
+<dt><code>header_addr</code></dt>
+<dd><p>Contains the address corresponding to the beginning of the Multiboot
+header &mdash; the physical memory location at which the magic value is
+supposed to be loaded. This field serves to <em>synchronize</em> the
+mapping between OS image offsets and physical memory addresses.
+</p>
+</dd>
+<dt><code>load_addr</code></dt>
+<dd><p>Contains the physical address of the beginning of the text segment. The
+offset in the OS image file at which to start loading is defined by the
+offset at which the header was found, minus (header_addr -
+load_addr). load_addr must be less than or equal to header_addr.
+</p>
+</dd>
+<dt><code>load_end_addr</code></dt>
+<dd><p>Contains the physical address of the end of the data
+segment. (load_end_addr - load_addr) specifies how much data to load.
+This implies that the text and data segments must be consecutive in the
+OS image; this is true for existing a.out executable formats.
+If this field is zero, the boot loader assumes that the text and data
+segments occupy the whole OS image file.
+</p>
+</dd>
+<dt><code>bss_end_addr</code></dt>
+<dd><p>Contains the physical address of the end of the bss segment. The boot
+loader initializes this area to zero, and reserves the memory it
+occupies to avoid placing boot modules and other data relevant to the
+operating system in that area. If this field is zero, the boot loader
+assumes that no bss segment is present.
+</p>
+</dd>
+<dt><code>entry_addr</code></dt>
+<dd><p>The physical address to which the boot loader should jump in order to
+start running the operating system.
+</p></dd>
+</dl>
+
+
+<hr>
+<a name="Header-graphics-fields"></a>
+<div class="header">
+<p>
+Previous: <a href="#Header-address-fields" accesskey="p" rel="prev">Header address fields</a>, Up: <a href="#OS-image-format" accesskey="u" rel="up">OS image format</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="The-graphics-fields-of-Multiboot-header"></a>
+<h4 class="subsection">3.1.4 The graphics fields of Multiboot header</h4>
+
+<p>All of the graphics fields are enabled by flag bit 2. They specify the
+preferred graphics mode. Note that that is only a <em>recommended</em>
+mode by the OS image. Boot loader may choose a different mode if it sees fit.
+</p>
+<p>The meaning of each is as follows:
+</p>
+<dl compact="compact">
+<dt><code>mode_type</code></dt>
+<dd><p>Contains &lsquo;<samp>0</samp>&rsquo; for linear graphics mode or &lsquo;<samp>1</samp>&rsquo; for
+EGA-standard text mode. Everything else is reserved for future
+expansion. Note that the boot loader may set a text mode even if this
+field contains &lsquo;<samp>0</samp>&rsquo;, or set a video mode even if this field contains
+&lsquo;<samp>1</samp>&rsquo;.
+</p>
+</dd>
+<dt><code>width</code></dt>
+<dd><p>Contains the number of the columns. This is specified in pixels in a
+graphics mode, and in characters in a text mode. The value zero
+indicates that the OS image has no preference.
+</p>
+</dd>
+<dt><code>height</code></dt>
+<dd><p>Contains the number of the lines. This is specified in pixels in a
+graphics mode, and in characters in a text mode. The value zero
+indicates that the OS image has no preference.
+</p>
+</dd>
+<dt><code>depth</code></dt>
+<dd><p>Contains the number of bits per pixel in a graphics mode, and zero in
+a text mode. The value zero indicates that the OS image has no
+preference.
+</p></dd>
+</dl>
+
+
+<hr>
+<a name="Machine-state"></a>
+<div class="header">
+<p>
+Next: <a href="#Boot-information-format" accesskey="n" rel="next">Boot information format</a>, Previous: <a href="#OS-image-format" accesskey="p" rel="prev">OS image format</a>, Up: <a href="#Specification" accesskey="u" rel="up">Specification</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Machine-state-1"></a>
+<h3 class="section">3.2 Machine state</h3>
+
+<p>When the boot loader invokes the 32-bit operating system, the machine
+must have the following state:
+</p>
+<dl compact="compact">
+<dt>&lsquo;<samp>EAX</samp>&rsquo;</dt>
+<dd><p>Must contain the magic value &lsquo;<samp>0x2BADB002</samp>&rsquo;; the presence of this
+value indicates to the operating system that it was loaded by a
+Multiboot-compliant boot loader (e.g. as opposed to another type of
+boot loader that the operating system can also be loaded from).
+</p>
+</dd>
+<dt>&lsquo;<samp>EBX</samp>&rsquo;</dt>
+<dd><p>Must contain the 32-bit physical address of the Multiboot
+information structure provided by the boot loader (see <a href="#Boot-information-format">Boot information format</a>).
+</p>
+</dd>
+<dt>&lsquo;<samp>CS</samp>&rsquo;</dt>
+<dd><p>Must be a 32-bit read/execute code segment with an offset of &lsquo;<samp>0</samp>&rsquo;
+and a limit of &lsquo;<samp>0xFFFFFFFF</samp>&rsquo;. The exact value is undefined.
+</p>
+</dd>
+<dt>&lsquo;<samp>DS</samp>&rsquo;</dt>
+<dt>&lsquo;<samp>ES</samp>&rsquo;</dt>
+<dt>&lsquo;<samp>FS</samp>&rsquo;</dt>
+<dt>&lsquo;<samp>GS</samp>&rsquo;</dt>
+<dt>&lsquo;<samp>SS</samp>&rsquo;</dt>
+<dd><p>Must be a 32-bit read/write data segment with an offset of &lsquo;<samp>0</samp>&rsquo;
+and a limit of &lsquo;<samp>0xFFFFFFFF</samp>&rsquo;. The exact values are all undefined.
+</p>
+</dd>
+<dt>&lsquo;<samp>A20 gate</samp>&rsquo;</dt>
+<dd><p>Must be enabled.
+</p>
+</dd>
+<dt>&lsquo;<samp>CR0</samp>&rsquo;</dt>
+<dd><p>Bit 31 (PG) must be cleared. Bit 0 (PE) must be set. Other bits are
+all undefined.
+</p>
+</dd>
+<dt>&lsquo;<samp>EFLAGS</samp>&rsquo;</dt>
+<dd><p>Bit 17 (VM) must be cleared. Bit 9 (IF) must be cleared. Other bits
+are all undefined.
+</p></dd>
+</dl>
+
+<p>All other processor registers and flag bits are undefined. This
+includes, in particular:
+</p>
+<dl compact="compact">
+<dt>&lsquo;<samp>ESP</samp>&rsquo;</dt>
+<dd><p>The OS image must create its own stack as soon as it needs one.
+</p>
+</dd>
+<dt>&lsquo;<samp>GDTR</samp>&rsquo;</dt>
+<dd><p>Even though the segment registers are set up as described above, the
+&lsquo;<samp>GDTR</samp>&rsquo; may be invalid, so the OS image must not load any segment
+registers (even just reloading the same values!) until it sets up its
+own &lsquo;<samp>GDT</samp>&rsquo;.
+</p>
+</dd>
+<dt>&lsquo;<samp>IDTR</samp>&rsquo;</dt>
+<dd><p>The OS image must leave interrupts disabled until it sets up its own
+<code>IDT</code>.
+</p></dd>
+</dl>
+
+<p>However, other machine state should be left by the boot loader in
+<em>normal working order</em>, i.e. as initialized by the <small>BIOS</small> (or
+DOS, if that&rsquo;s what the boot loader runs from). In other words, the
+operating system should be able to make <small>BIOS</small> calls and such after
+being loaded, as long as it does not overwrite the <small>BIOS</small> data
+structures before doing so. Also, the boot loader must leave the
+<small>PIC</small> programmed with the normal <small>BIOS</small>/DOS values, even if it
+changed them during the switch to 32-bit mode.
+</p>
+
+<hr>
+<a name="Boot-information-format"></a>
+<div class="header">
+<p>
+Previous: <a href="#Machine-state" accesskey="p" rel="prev">Machine state</a>, Up: <a href="#Specification" accesskey="u" rel="up">Specification</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Boot-information-format-1"></a>
+<h3 class="section">3.3 Boot information format</h3>
+
+<p>FIXME: Split this chapter like the chapter &ldquo;OS image format&rdquo;.
+</p>
+<p>Upon entry to the operating system, the <code>EBX</code> register contains the
+physical address of a <em>Multiboot information</em> data structure,
+through which the boot loader communicates vital information to the
+operating system. The operating system can use or ignore any parts of
+the structure as it chooses; all information passed by the boot loader
+is advisory only.
+</p>
+<p>The Multiboot information structure and its related substructures may be
+placed anywhere in memory by the boot loader (with the exception of the
+memory reserved for the kernel and boot modules, of course). It is the
+operating system&rsquo;s responsibility to avoid overwriting this memory until
+it is done using it.
+</p>
+<p>The format of the Multiboot information structure (as defined so far)
+follows:
+</p>
+<div class="example">
+<pre class="example">        +-------------------+
+0       | flags             |    (required)
+        +-------------------+
+4       | mem_lower         |    (present if flags[0] is set)
+8       | mem_upper         |    (present if flags[0] is set)
+        +-------------------+
+12      | boot_device       |    (present if flags[1] is set)
+        +-------------------+
+16      | cmdline           |    (present if flags[2] is set)
+        +-------------------+
+20      | mods_count        |    (present if flags[3] is set)
+24      | mods_addr         |    (present if flags[3] is set)
+        +-------------------+
+28 - 40 | syms              |    (present if flags[4] or
+        |                   |                flags[5] is set)
+        +-------------------+
+44      | mmap_length       |    (present if flags[6] is set)
+48      | mmap_addr         |    (present if flags[6] is set)
+        +-------------------+
+52      | drives_length     |    (present if flags[7] is set)
+56      | drives_addr       |    (present if flags[7] is set)
+        +-------------------+
+60      | config_table      |    (present if flags[8] is set)
+        +-------------------+
+64      | boot_loader_name  |    (present if flags[9] is set)
+        +-------------------+
+68      | apm_table         |    (present if flags[10] is set)
+        +-------------------+
+72      | vbe_control_info  |    (present if flags[11] is set)
+76      | vbe_mode_info     |
+80      | vbe_mode          |
+82      | vbe_interface_seg |
+84      | vbe_interface_off |
+86      | vbe_interface_len |
+        +-------------------+
+88      | framebuffer_addr  |    (present if flags[12] is set)
+96      | framebuffer_pitch |
+100     | framebuffer_width |
+104     | framebuffer_height|
+108     | framebuffer_bpp   |
+109     | framebuffer_type  |
+110-115 | color_info        |
+        +-------------------+
+
+</pre></div>
+
+<p>The first longword indicates the presence and validity of other fields
+in the Multiboot information structure. All as-yet-undefined bits must
+be set to zero by the boot loader. Any set bits that the operating
+system does not understand should be ignored. Thus, the &lsquo;<samp>flags</samp>&rsquo;
+field also functions as a version indicator, allowing the Multiboot
+information structure to be expanded in the future without breaking
+anything.
+</p>
+<p>If bit 0 in the &lsquo;<samp>flags</samp>&rsquo; word is set, then the &lsquo;<samp>mem_*</samp>&rsquo; fields
+are valid. &lsquo;<samp>mem_lower</samp>&rsquo; and &lsquo;<samp>mem_upper</samp>&rsquo; indicate the amount of
+lower and upper memory, respectively, in kilobytes. Lower memory starts
+at address 0, and upper memory starts at address 1 megabyte. The maximum
+possible value for lower memory is 640 kilobytes. The value returned for
+upper memory is maximally the address of the first upper memory hole
+minus 1 megabyte. It is not guaranteed to be this value.
+</p>
+<p>If bit 1 in the &lsquo;<samp>flags</samp>&rsquo; word is set, then the &lsquo;<samp>boot_device</samp>&rsquo;
+field is valid, and indicates which <small>BIOS</small> disk device the boot
+loader loaded the OS image from. If the OS image was not loaded from a
+<small>BIOS</small> disk, then this field must not be present (bit 3 must be
+clear). The operating system may use this field as a hint for
+determining its own <em>root</em> device, but is not required to. The
+&lsquo;<samp>boot_device</samp>&rsquo; field is laid out in four one-byte subfields as
+follows:
+</p>
+<div class="example">
+<pre class="example">+-------+-------+-------+-------+
+| part3 | part2 | part1 | drive |
++-------+-------+-------+-------+
+Least significant             Most significant
+</pre></div>
+
+<p>The most significant byte contains the <small>BIOS</small> drive number
+as understood by the
+<small>BIOS</small> INT 0x13 low-level disk interface: e.g. 0x00 for the first
+floppy disk or 0x80 for the first hard disk.
+</p>
+<p>The three remaining bytes specify the boot partition. &lsquo;<samp>part1</samp>&rsquo;
+specifies the <em>top-level</em> partition number, &lsquo;<samp>part2</samp>&rsquo; specifies a
+<em>sub-partition</em> in the top-level partition, etc. Partition numbers
+always start from zero. Unused partition bytes must be set to 0xFF. For
+example, if the disk is partitioned using a simple one-level DOS
+partitioning scheme, then &lsquo;<samp>part1</samp>&rsquo; contains the DOS partition
+number, and &lsquo;<samp>part2</samp>&rsquo; and &lsquo;<samp>part3</samp>&rsquo; are both 0xFF. As another
+example, if a disk is partitioned first into DOS partitions, and then
+one of those DOS partitions is subdivided into several BSD partitions
+using BSD&rsquo;s <em>disklabel</em> strategy, then &lsquo;<samp>part1</samp>&rsquo; contains the DOS
+partition number, &lsquo;<samp>part2</samp>&rsquo; contains the BSD sub-partition within
+that DOS partition, and &lsquo;<samp>part3</samp>&rsquo; is 0xFF.
+</p>
+<p>DOS extended partitions are indicated as partition numbers starting from
+4 and increasing, rather than as nested sub-partitions, even though the
+underlying disk layout of extended partitions is hierarchical in
+nature. For example, if the boot loader boots from the second extended
+partition on a disk partitioned in conventional DOS style, then
+&lsquo;<samp>part1</samp>&rsquo; will be 5, and &lsquo;<samp>part2</samp>&rsquo; and &lsquo;<samp>part3</samp>&rsquo; will both be
+0xFF.
+</p>
+<p>If bit 2 of the &lsquo;<samp>flags</samp>&rsquo; longword is set, the &lsquo;<samp>cmdline</samp>&rsquo; field
+is valid, and contains the physical address of the command line to
+be passed to the kernel. The command line is a normal C-style
+zero-terminated string. The exact format of command line is left to
+OS developpers. General-purpose boot loaders should allow user a complete
+control on command line independently of other factors like image name.
+Boot loaders with specific payload in mind may completely or partially generate
+it algorithmically.
+</p>
+<p>If bit 3 of the &lsquo;<samp>flags</samp>&rsquo; is set, then the &lsquo;<samp>mods</samp>&rsquo; fields
+indicate to the kernel what boot modules were loaded along with the
+kernel image, and where they can be found. &lsquo;<samp>mods_count</samp>&rsquo; contains
+the number of modules loaded; &lsquo;<samp>mods_addr</samp>&rsquo; contains the physical
+address of the first module structure. &lsquo;<samp>mods_count</samp>&rsquo; may be zero,
+indicating no boot modules were loaded, even if bit 3 of &lsquo;<samp>flags</samp>&rsquo; is
+set. Each module structure is formatted as follows:
+</p>
+<div class="example">
+<pre class="example">        +-------------------+
+0       | mod_start         |
+4       | mod_end           |
+        +-------------------+
+8       | string            |
+        +-------------------+
+12      | reserved (0)      |
+        +-------------------+
+</pre></div>
+
+<p>The first two fields contain the start and end addresses of the boot
+module itself. The &lsquo;<samp>string</samp>&rsquo; field provides an arbitrary string to
+be associated with that particular boot module; it is a zero-terminated
+ASCII string, just like the kernel command line. The &lsquo;<samp>string</samp>&rsquo; field
+may be 0 if there is no string associated with the module. Typically the
+string might be a command line (e.g. if the operating system treats boot
+modules as executable programs), or a pathname (e.g. if the operating
+system treats boot modules as files in a file system), but its exact use
+is specific to the operating system. The &lsquo;<samp>reserved</samp>&rsquo; field must be
+set to 0 by the boot loader and ignored by the operating system.
+</p>
+<p><strong>Caution:</strong> Bits 4 &amp; 5 are mutually exclusive.
+</p>
+<p>If bit 4 in the &lsquo;<samp>flags</samp>&rsquo; word is set, then the following fields in
+the Multiboot information structure starting at byte 28 are valid:
+</p>
+<div class="example">
+<pre class="example">        +-------------------+
+28      | tabsize           |
+32      | strsize           |
+36      | addr              |
+40      | reserved (0)      |
+        +-------------------+
+</pre></div>
+
+<p>These indicate where the symbol table from an a.out kernel image can be
+found. &lsquo;<samp>addr</samp>&rsquo; is the physical address of the size (4-byte unsigned
+long) of an array of a.out format <em>nlist</em> structures, followed
+immediately by the array itself, then the size (4-byte unsigned long) of
+a set of zero-terminated <small>ASCII</small> strings (plus sizeof(unsigned long) in
+this case), and finally the set of strings itself. &lsquo;<samp>tabsize</samp>&rsquo; is
+equal to its size parameter (found at the beginning of the symbol
+section), and &lsquo;<samp>strsize</samp>&rsquo; is equal to its size parameter (found at
+the beginning of the string section) of the following string table to
+which the symbol table refers. Note that &lsquo;<samp>tabsize</samp>&rsquo; may be 0,
+indicating no symbols, even if bit 4 in the &lsquo;<samp>flags</samp>&rsquo; word is set.
+</p>
+<p>If bit 5 in the &lsquo;<samp>flags</samp>&rsquo; word is set, then the following fields in
+the Multiboot information structure starting at byte 28 are valid:
+</p>
+<div class="example">
+<pre class="example">        +-------------------+
+28      | num               |
+32      | size              |
+36      | addr              |
+40      | shndx             |
+        +-------------------+
+</pre></div>
+
+<p>These indicate where the section header table from an ELF kernel is, the
+size of each entry, number of entries, and the string table used as the
+index of names. They correspond to the &lsquo;<samp>shdr_*</samp>&rsquo; entries
+(&lsquo;<samp>shdr_num</samp>&rsquo;, etc.) in the Executable and Linkable Format (<small>ELF</small>)
+specification in the program header. All sections are loaded, and the
+physical address fields of the <small>ELF</small> section header then refer to where
+the sections are in memory (refer to the i386 <small>ELF</small> documentation for
+details as to how to read the section header(s)). Note that
+&lsquo;<samp>shdr_num</samp>&rsquo; may be 0, indicating no symbols, even if bit 5 in the
+&lsquo;<samp>flags</samp>&rsquo; word is set.
+</p>
+<p>If bit 6 in the &lsquo;<samp>flags</samp>&rsquo; word is set, then the &lsquo;<samp>mmap_*</samp>&rsquo; fields
+are valid, and indicate the address and length of a buffer containing a
+memory map of the machine provided by the <small>BIOS</small>. &lsquo;<samp>mmap_addr</samp>&rsquo; is
+the address, and &lsquo;<samp>mmap_length</samp>&rsquo; is the total size of the buffer. The
+buffer consists of one or more of the following size/structure pairs
+(&lsquo;<samp>size</samp>&rsquo; is really used for skipping to the next pair):
+</p>
+<div class="example">
+<pre class="example">        +-------------------+
+-4      | size              |
+        +-------------------+
+0       | base_addr         |
+8       | length            |
+16      | type              |
+        +-------------------+
+</pre></div>
+
+<p>where &lsquo;<samp>size</samp>&rsquo; is the size of the associated structure in bytes, which
+can be greater than the minimum of 20 bytes. &lsquo;<samp>base_addr</samp>&rsquo; is the
+starting address. &lsquo;<samp>length</samp>&rsquo; is the size of the memory region in bytes.
+&lsquo;<samp>type</samp>&rsquo; is the variety of address range represented, where a
+value of 1 indicates available <small>RAM</small>, value of 3 indicates usable memory
+holding ACPI information, value of 4 indicates reserved memory which needs to
+be preserved on hibernation, value of 5 indicates a memory which is occupied by defective RAM modules and all other values currently
+indicated a reserved area.
+</p>
+<p>The map provided is guaranteed to list all standard <small>RAM</small> that should
+be available for normal use.
+</p>
+<p>If bit 7 in the &lsquo;<samp>flags</samp>&rsquo; is set, then the &lsquo;<samp>drives_*</samp>&rsquo; fields
+are valid, and indicate the address of the physical address of the first
+drive structure and the size of drive structures. &lsquo;<samp>drives_addr</samp>&rsquo;
+is the address, and &lsquo;<samp>drives_length</samp>&rsquo; is the total size of drive
+structures. Note that &lsquo;<samp>drives_length</samp>&rsquo; may be zero. Each drive
+structure is formatted as follows:
+</p>
+<div class="example">
+<pre class="example">        +-------------------+
+0       | size              |
+        +-------------------+
+4       | drive_number      |
+        +-------------------+
+5       | drive_mode        |
+        +-------------------+
+6       | drive_cylinders   |
+8       | drive_heads       |
+9       | drive_sectors     |
+        +-------------------+
+10 - xx | drive_ports       |
+        +-------------------+
+</pre></div>
+
+<p>The &lsquo;<samp>size</samp>&rsquo; field specifies the size of this structure. The size
+varies, depending on the number of ports. Note that the size may not be
+equal to (10 + 2 * the number of ports), because of an alignment.
+</p>
+<p>The &lsquo;<samp>drive_number</samp>&rsquo; field contains the BIOS drive number. The
+&lsquo;<samp>drive_mode</samp>&rsquo; field represents the access mode used by the boot
+loader. Currently, the following modes are defined:
+</p>
+<dl compact="compact">
+<dt>&lsquo;<samp>0</samp>&rsquo;</dt>
+<dd><p>CHS mode (traditional cylinder/head/sector addressing mode).
+</p>
+</dd>
+<dt>&lsquo;<samp>1</samp>&rsquo;</dt>
+<dd><p>LBA mode (Logical Block Addressing mode).
+</p></dd>
+</dl>
+
+<p>The three fields, &lsquo;<samp>drive_cylinders</samp>&rsquo;, &lsquo;<samp>drive_heads</samp>&rsquo; and
+&lsquo;<samp>drive_sectors</samp>&rsquo;, indicate the geometry of the drive detected by the
+<small>BIOS</small>. &lsquo;<samp>drive_cylinders</samp>&rsquo; contains the number of the
+cylinders. &lsquo;<samp>drive_heads</samp>&rsquo; contains the number of the
+heads. &lsquo;<samp>drive_sectors</samp>&rsquo; contains the number of the sectors per
+track.
+</p>
+<p>The &lsquo;<samp>drive_ports</samp>&rsquo; field contains the array of the I/O ports used
+for the drive in the <small>BIOS</small> code. The array consists of zero or more
+unsigned two-bytes integers, and is terminated with zero. Note that the
+array may contain any number of I/O ports that are not related to the
+drive actually (such as <small>DMA</small> controller&rsquo;s ports).
+</p>
+<p>If bit 8 in the &lsquo;<samp>flags</samp>&rsquo; is set, then the &lsquo;<samp>config_table</samp>&rsquo; field
+is valid, and indicates the address of the <small>ROM</small> configuration table
+returned by the <em>GET CONFIGURATION</em> <small>BIOS</small> call. If the <small>BIOS</small>
+call fails, then the size of the table must be <em>zero</em>.
+</p>
+<p>If bit 9 in the &lsquo;<samp>flags</samp>&rsquo; is set, the &lsquo;<samp>boot_loader_name</samp>&rsquo; field
+is valid, and contains the physical address of the name of a boot
+loader booting the kernel. The name is a normal C-style zero-terminated
+string.
+</p>
+<p>If bit 10 in the &lsquo;<samp>flags</samp>&rsquo; is set, the &lsquo;<samp>apm_table</samp>&rsquo; field is
+valid, and contains the physical address of an <small>APM</small> table defined as
+below:
+</p>
+<div class="example">
+<pre class="example">        +----------------------+
+0       | version              |
+2       | cseg                 |
+4       | offset               |
+8       | cseg_16              |
+10      | dseg                 |
+12      | flags                |
+14      | cseg_len             |
+16      | cseg_16_len          |
+18      | dseg_len             |
+        +----------------------+
+</pre></div>
+
+<p>The fields &lsquo;<samp>version</samp>&rsquo;, &lsquo;<samp>cseg</samp>&rsquo;, &lsquo;<samp>offset</samp>&rsquo;, &lsquo;<samp>cseg_16</samp>&rsquo;,
+&lsquo;<samp>dseg</samp>&rsquo;, &lsquo;<samp>flags</samp>&rsquo;, &lsquo;<samp>cseg_len</samp>&rsquo;, &lsquo;<samp>cseg_16_len</samp>&rsquo;,
+&lsquo;<samp>dseg_len</samp>&rsquo; indicate the version number, the protected mode 32-bit
+code segment, the offset of the entry point, the protected mode 16-bit
+code segment, the protected mode 16-bit data segment, the flags, the
+length of the protected mode 32-bit code segment, the length of the
+protected mode 16-bit code segment, and the length of the protected mode
+16-bit data segment, respectively. Only the field &lsquo;<samp>offset</samp>&rsquo; is 4
+bytes, and the others are 2 bytes. See
+<a href="http://www.microsoft.com/hwdev/busbios/amp_12.htm">Advanced Power
+Management (APM) BIOS Interface Specification</a>, for more information.
+</p>
+<p>If bit 11 in the &lsquo;<samp>flags</samp>&rsquo; is set, the <small>VBE</small> table is available.
+</p>
+<p>The fields &lsquo;<samp>vbe_control_info</samp>&rsquo; and &lsquo;<samp>vbe_mode_info</samp>&rsquo; contain
+the physical addresses of <small>VBE</small> control information returned by the
+<small>VBE</small> Function 00h and <small>VBE</small> mode information returned by the
+<small>VBE</small> Function 01h, respectively.
+</p>
+<p>The field &lsquo;<samp>vbe_mode</samp>&rsquo; indicates current video mode in the format
+specified in <small>VBE</small> 3.0.
+</p>
+<p>The rest fields &lsquo;<samp>vbe_interface_seg</samp>&rsquo;, &lsquo;<samp>vbe_interface_off</samp>&rsquo;, and
+&lsquo;<samp>vbe_interface_len</samp>&rsquo; contain the table of a protected mode interface
+defined in <small>VBE</small> 2.0+. If this information is not available, those
+fields contain zero. Note that <small>VBE</small> 3.0 defines another protected
+mode interface which is incompatible with the old one. If you want to
+use the new protected mode interface, you will have to find the table
+yourself.
+</p>
+<p>The fields for the graphics table are designed for <small>VBE</small>, but
+Multiboot boot loaders may simulate <small>VBE</small> on non-<small>VBE</small> modes, as
+if they were <small>VBE</small> modes.
+</p>
+<p>If bit 12 in the &lsquo;<samp>flags</samp>&rsquo; is set, the <small>FRAMEBUFFER</small> table is available.
+</p>
+<p>The field &lsquo;<samp>framebuffer_addr</samp>&rsquo; contains framebuffer physical address. This
+field is 64-bit wide but bootloader <em>should</em> set it under 4 GiB if possible
+for compatibility with kernels which aren&rsquo;t aware of PAE or AMD64. The field
+&lsquo;<samp>framebuffer_pitch</samp>&rsquo; contains the framebuffer pitch in bytes. The fields
+&lsquo;<samp>framebuffer_width</samp>&rsquo;, &lsquo;<samp>framebuffer_height</samp>&rsquo; contain the framebuffer
+dimensions in pixels. The field &lsquo;<samp>framebuffer_bpp</samp>&rsquo; contains the number of
+bits per pixel. If &lsquo;<samp>framebuffer_type</samp>&rsquo; is set to &lsquo;<samp>0</samp>&rsquo; it means
+indexed color will be used. In this case color_info is defined as follows:
+</p><div class="example">
+<pre class="example">        +----------------------------------+
+110     | framebuffer_palette_addr         |
+114     | framebuffer_palette_num_colors   |
+        +----------------------------------+
+</pre></div>
+<p>&lsquo;<samp>framebuffer_palette_addr</samp>&rsquo; contains the address of the color palette,
+which is an array of color descriptors. Each color descriptor has the
+following structure:
+</p><div class="example">
+<pre class="example">        +-------------+
+0       | red_value   |
+1       | green_value |
+2       | blue_value  |
+        +-------------+
+</pre></div>
+<p>If &lsquo;<samp>framebuffer_type</samp>&rsquo; is set to &lsquo;<samp>1</samp>&rsquo; it means direct RGB color will
+be used. Then color_type is defined as follows:
+</p>
+<div class="example">
+<pre class="example">        +----------------------------------+
+110     | framebuffer_red_field_position   |
+111     | framebuffer_red_mask_size        |
+112     | framebuffer_green_field_position |
+113     | framebuffer_green_mask_size      |
+114     | framebuffer_blue_field_position  |
+115     | framebuffer_blue_mask_size       |
+        +----------------------------------+
+</pre></div>
+
+<p>If &lsquo;<samp>framebuffer_type</samp>&rsquo; is set to &lsquo;<samp>2</samp>&rsquo; it means EGA-standard text mode
+will be used. In this case &lsquo;<samp>framebuffer_width</samp>&rsquo; and
+&lsquo;<samp>framebuffer_height</samp>&rsquo; are expressed in characters instead of pixels.
+&lsquo;<samp>framebuffer_bpp</samp>&rsquo; is equal to 16 (bits per character) and
+&lsquo;<samp>framebuffer_pitch</samp>&rsquo; is expressed in bytes per text line.
+All further values of &lsquo;<samp>framebuffer_type</samp>&rsquo; are reserved for future expansion.
+</p>
+<hr>
+<a name="Examples"></a>
+<div class="header">
+<p>
+Next: <a href="#History" accesskey="n" rel="next">History</a>, Previous: <a href="#Specification" accesskey="p" rel="prev">Specification</a>, Up: <a href="#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Examples-1"></a>
+<h2 class="chapter">4 Examples</h2>
+
+<p><strong>Caution:</strong> The following items are not part of the specification
+document, but are included for prospective operating system and boot
+loader writers.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="#Notes-on-PC" accesskey="1">Notes on PC</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#BIOS-device-mapping-techniques" accesskey="2">BIOS device mapping techniques</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Example-OS-code" accesskey="3">Example OS code</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Example-boot-loader-code" accesskey="4">Example boot loader code</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+
+<hr>
+<a name="Notes-on-PC"></a>
+<div class="header">
+<p>
+Next: <a href="#BIOS-device-mapping-techniques" accesskey="n" rel="next">BIOS device mapping techniques</a>, Up: <a href="#Examples" accesskey="u" rel="up">Examples</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Notes-on-PC-1"></a>
+<h3 class="section">4.1 Notes on PC</h3>
+
+<p>In reference to bit 0 of the &lsquo;<samp>flags</samp>&rsquo; parameter in the Multiboot
+information structure, if the bootloader in question uses older
+<small>BIOS</small> interfaces, or the newest ones are not available (see
+description about bit 6), then a maximum of either 15 or 63 megabytes of
+memory may be reported. It is <em>highly</em> recommended that boot
+loaders perform a thorough memory probe.
+</p>
+<p>In reference to bit 1 of the &lsquo;<samp>flags</samp>&rsquo; parameter in the Multiboot
+information structure, it is recognized that determination of which
+<small>BIOS</small> drive maps to which device driver in an operating system is
+non-trivial, at best. Many kludges have been made to various operating
+systems instead of solving this problem, most of them breaking under
+many conditions. To encourage the use of general-purpose solutions to
+this problem, there are 2 <small>BIOS</small> device mapping techniques
+(see <a href="#BIOS-device-mapping-techniques">BIOS device mapping techniques</a>). 
+</p>
+<p>In reference to bit 6 of the &lsquo;<samp>flags</samp>&rsquo; parameter in the Multiboot
+information structure, it is important to note that the data structure
+used there (starting with &lsquo;<samp>BaseAddrLow</samp>&rsquo;) is the data returned by
+the INT 15h, AX=E820h &mdash; Query System Address Map call. See See <a href="http://www.gnu.org/software/grub/manual/grub.html#Query-System-Address-Map">Query System Address Map</a> in <cite>The GRUB
+Manual</cite>, for more information. The interface here is meant to allow a
+boot loader to work unmodified with any reasonable extensions of the
+<small>BIOS</small> interface, passing along any extra data to be interpreted by
+the operating system as desired.
+</p>
+
+<hr>
+<a name="BIOS-device-mapping-techniques"></a>
+<div class="header">
+<p>
+Next: <a href="#Example-OS-code" accesskey="n" rel="next">Example OS code</a>, Previous: <a href="#Notes-on-PC" accesskey="p" rel="prev">Notes on PC</a>, Up: <a href="#Examples" accesskey="u" rel="up">Examples</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="BIOS-device-mapping-techniques-1"></a>
+<h3 class="section">4.2 BIOS device mapping techniques</h3>
+
+<p>Both of these techniques should be usable from any PC operating system,
+and neither require any special support in the drivers themselves. This
+section will be flushed out into detailed explanations, particularly for
+the I/O restriction technique.
+</p>
+<p>The general rule is that the data comparison technique is the quick and
+dirty solution. It works most of the time, but doesn&rsquo;t cover all the
+bases, and is relatively simple.
+</p>
+<p>The I/O restriction technique is much more complex, but it has potential
+to solve the problem under all conditions, plus allow access of the
+remaining <small>BIOS</small> devices when not all of them have operating system
+drivers.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="#Data-comparison-technique" accesskey="1">Data comparison technique</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#I_002fO-restriction-technique" accesskey="2">I/O restriction technique</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+
+<hr>
+<a name="Data-comparison-technique"></a>
+<div class="header">
+<p>
+Next: <a href="#I_002fO-restriction-technique" accesskey="n" rel="next">I/O restriction technique</a>, Up: <a href="#BIOS-device-mapping-techniques" accesskey="u" rel="up">BIOS device mapping techniques</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Data-comparison-technique-1"></a>
+<h4 class="subsection">4.2.1 Data comparison technique</h4>
+
+<p>Before activating <em>any</em> of the device drivers, gather enough data
+from similar sectors on each of the disks such that each one can be
+uniquely identified.
+</p>
+<p>After activating the device drivers, compare data from the drives using
+the operating system drivers. This should hopefully be sufficient to
+provide such a mapping.
+</p>
+<p>Problems:
+</p>
+<ol>
+<li> The data on some <small>BIOS</small> devices might be identical (so the part
+reading the drives from the <small>BIOS</small> should have some mechanism to give
+up).
+
+</li><li> There might be extra drives not accessible from the <small>BIOS</small> which are
+identical to some drive used by the <small>BIOS</small> (so it should be capable
+of giving up there as well).
+</li></ol>
+
+
+<hr>
+<a name="I_002fO-restriction-technique"></a>
+<div class="header">
+<p>
+Previous: <a href="#Data-comparison-technique" accesskey="p" rel="prev">Data comparison technique</a>, Up: <a href="#BIOS-device-mapping-techniques" accesskey="u" rel="up">BIOS device mapping techniques</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="I_002fO-restriction-technique-1"></a>
+<h4 class="subsection">4.2.2 I/O restriction technique</h4>
+
+<p>This first step may be unnecessary, but first create copy-on-write
+mappings for the device drivers writing into <small>PC</small> <small>RAM</small>. Keep the
+original copies for the <em>clean <small>BIOS</small> virtual machine</em> to be
+created later.
+</p>
+<p>For each device driver brought online, determine which <small>BIOS</small> devices
+become inaccessible by:
+</p>
+<ol>
+<li> Create a <em>clean <small>BIOS</small> virtual machine</em>.
+
+</li><li> Set the I/O permission map for the I/O area claimed by the device driver
+to no permissions (neither read nor write).
+
+</li><li> Access each device.
+
+</li><li> Record which devices succeed, and those which try to access the
+<em>restricted</em> I/O areas (hopefully, this will be an <em>xor</em>
+situation).
+</li></ol>
+
+<p>For each device driver, given how many of the <small>BIOS</small> devices were
+subsumed by it (there should be no gaps in this list), it should be easy
+to determine which devices on the controller these are.
+</p>
+<p>In general, you have at most 2 disks from each controller given
+<small>BIOS</small> numbers, but they pretty much always count from the lowest
+logically numbered devices on the controller.
+</p>
+
+<hr>
+<a name="Example-OS-code"></a>
+<div class="header">
+<p>
+Next: <a href="#Example-boot-loader-code" accesskey="n" rel="next">Example boot loader code</a>, Previous: <a href="#BIOS-device-mapping-techniques" accesskey="p" rel="prev">BIOS device mapping techniques</a>, Up: <a href="#Examples" accesskey="u" rel="up">Examples</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Example-OS-code-1"></a>
+<h3 class="section">4.3 Example OS code</h3>
+
+<p>In this distribution, the example Multiboot kernel <samp>kernel</samp> is
+included. The kernel just prints out the Multiboot information structure
+on the screen, so you can make use of the kernel to test a
+Multiboot-compliant boot loader and for reference to how to implement a
+Multiboot kernel. The source files can be found under the directory
+<samp>doc</samp> in the Multiboot source distribution.
+</p>
+<p>The kernel <samp>kernel</samp> consists of only three files: <samp>boot.S</samp>,
+<samp>kernel.c</samp> and <samp>multiboot.h</samp>. The assembly source
+<samp>boot.S</samp> is written in GAS (see <a href="http://sourceware.org/binutils/docs/as/index.html#Top">GNU assembler</a> in <cite>The GNU assembler</cite>), and contains the Multiboot information structure to
+comply with the specification. When a Multiboot-compliant boot loader
+loads and execute it, it initialize the stack pointer and <code>EFLAGS</code>,
+and then call the function <code>cmain</code> defined in <samp>kernel.c</samp>. If
+<code>cmain</code> returns to the callee, then it shows a message to inform
+the user of the halt state and stops forever until you push the reset
+key. The file <samp>kernel.c</samp> contains the function <code>cmain</code>,
+which checks if the magic number passed by the boot loader is valid and
+so on, and some functions to print messages on the screen. The file
+<samp>multiboot.h</samp> defines some macros, such as the magic number for the
+Multiboot header, the Multiboot header structure and the Multiboot
+information structure.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="#multiboot_002eh" accesskey="1">multiboot.h</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#boot_002eS" accesskey="2">boot.S</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#kernel_002ec" accesskey="3">kernel.c</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Other-Multiboot-kernels" accesskey="4">Other Multiboot kernels</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+
+<hr>
+<a name="multiboot_002eh"></a>
+<div class="header">
+<p>
+Next: <a href="#boot_002eS" accesskey="n" rel="next">boot.S</a>, Up: <a href="#Example-OS-code" accesskey="u" rel="up">Example OS code</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="multiboot_002eh-1"></a>
+<h4 class="subsection">4.3.1 multiboot.h</h4>
+
+<p>This is the source code in the file <samp>multiboot.h</samp>:
+</p>
+<div class="example">
+<pre class="example">/* <span class="roman">multiboot.h - Multiboot header file.</span> */
+/* <span class="roman">Copyright (C) 1999,2003,2007,2008,2009,2010  Free Software Foundation, Inc.
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the &quot;Software&quot;), to
+ *  deal in the Software without restriction, including without limitation the
+ *  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ *  sell copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in
+ *  all copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL ANY
+ *  DEVELOPER OR DISTRIBUTOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ *  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+ *  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</span> */
+
+#ifndef MULTIBOOT_HEADER
+#define MULTIBOOT_HEADER 1
+
+/* <span class="roman">How many bytes from the start of the file we search for the header.</span> */
+#define MULTIBOOT_SEARCH                        8192
+#define MULTIBOOT_HEADER_ALIGN                  4
+
+/* <span class="roman">The magic field should contain this.</span> */
+#define MULTIBOOT_HEADER_MAGIC                  0x1BADB002
+
+/* <span class="roman">This should be in %eax.</span> */
+#define MULTIBOOT_BOOTLOADER_MAGIC              0x2BADB002
+
+/* <span class="roman">Alignment of multiboot modules.</span> */
+#define MULTIBOOT_MOD_ALIGN                     0x00001000
+
+/* <span class="roman">Alignment of the multiboot info structure.</span> */
+#define MULTIBOOT_INFO_ALIGN                    0x00000004
+
+/* <span class="roman">Flags set in the &rsquo;flags&rsquo; member of the multiboot header.</span> */
+
+/* <span class="roman">Align all boot modules on i386 page (4KB) boundaries.</span> */
+#define MULTIBOOT_PAGE_ALIGN                    0x00000001
+
+/* <span class="roman">Must pass memory information to OS.</span> */
+#define MULTIBOOT_MEMORY_INFO                   0x00000002
+
+/* <span class="roman">Must pass video information to OS.</span> */
+#define MULTIBOOT_VIDEO_MODE                    0x00000004
+
+/* <span class="roman">This flag indicates the use of the address fields in the header.</span> */
+#define MULTIBOOT_AOUT_KLUDGE                   0x00010000
+
+/* <span class="roman">Flags to be set in the &rsquo;flags&rsquo; member of the multiboot info structure.</span> */
+
+/* <span class="roman">is there basic lower/upper memory information?</span> */
+#define MULTIBOOT_INFO_MEMORY                   0x00000001
+/* <span class="roman">is there a boot device set?</span> */
+#define MULTIBOOT_INFO_BOOTDEV                  0x00000002
+/* <span class="roman">is the command-line defined?</span> */
+#define MULTIBOOT_INFO_CMDLINE                  0x00000004
+/* <span class="roman">are there modules to do something with?</span> */
+#define MULTIBOOT_INFO_MODS                     0x00000008
+
+/* <span class="roman">These next two are mutually exclusive</span> */
+
+/* <span class="roman">is there a symbol table loaded?</span> */
+#define MULTIBOOT_INFO_AOUT_SYMS                0x00000010
+/* <span class="roman">is there an ELF section header table?</span> */
+#define MULTIBOOT_INFO_ELF_SHDR                 0X00000020
+
+/* <span class="roman">is there a full memory map?</span> */
+#define MULTIBOOT_INFO_MEM_MAP                  0x00000040
+
+/* <span class="roman">Is there drive info?</span> */
+#define MULTIBOOT_INFO_DRIVE_INFO               0x00000080
+
+/* <span class="roman">Is there a config table?</span> */
+#define MULTIBOOT_INFO_CONFIG_TABLE             0x00000100
+
+/* <span class="roman">Is there a boot loader name?</span> */
+#define MULTIBOOT_INFO_BOOT_LOADER_NAME         0x00000200
+
+/* <span class="roman">Is there a APM table?</span> */
+#define MULTIBOOT_INFO_APM_TABLE                0x00000400
+
+/* <span class="roman">Is there video information?</span> */
+#define MULTIBOOT_INFO_VBE_INFO                 0x00000800
+#define MULTIBOOT_INFO_FRAMEBUFFER_INFO         0x00001000
+
+#ifndef ASM_FILE
+
+typedef unsigned char           multiboot_uint8_t;
+typedef unsigned short          multiboot_uint16_t;
+typedef unsigned int            multiboot_uint32_t;
+typedef unsigned long long      multiboot_uint64_t;
+
+struct multiboot_header
+{
+  /* <span class="roman">Must be MULTIBOOT_MAGIC - see above.</span> */
+  multiboot_uint32_t magic;
+
+  /* <span class="roman">Feature flags.</span> */
+  multiboot_uint32_t flags;
+
+  /* <span class="roman">The above fields plus this one must equal 0 mod 2^32.</span> */
+  multiboot_uint32_t checksum;
+
+  /* <span class="roman">These are only valid if MULTIBOOT_AOUT_KLUDGE is set.</span> */
+  multiboot_uint32_t header_addr;
+  multiboot_uint32_t load_addr;
+  multiboot_uint32_t load_end_addr;
+  multiboot_uint32_t bss_end_addr;
+  multiboot_uint32_t entry_addr;
+
+  /* <span class="roman">These are only valid if MULTIBOOT_VIDEO_MODE is set.</span> */
+  multiboot_uint32_t mode_type;
+  multiboot_uint32_t width;
+  multiboot_uint32_t height;
+  multiboot_uint32_t depth;
+};
+
+/* <span class="roman">The symbol table for a.out.</span> */
+struct multiboot_aout_symbol_table
+{
+  multiboot_uint32_t tabsize;
+  multiboot_uint32_t strsize;
+  multiboot_uint32_t addr;
+  multiboot_uint32_t reserved;
+};
+typedef struct multiboot_aout_symbol_table multiboot_aout_symbol_table_t;
+
+/* <span class="roman">The section header table for ELF.</span> */
+struct multiboot_elf_section_header_table
+{
+  multiboot_uint32_t num;
+  multiboot_uint32_t size;
+  multiboot_uint32_t addr;
+  multiboot_uint32_t shndx;
+};
+typedef struct multiboot_elf_section_header_table multiboot_elf_section_header_table_t;
+
+struct multiboot_info
+{
+  /* <span class="roman">Multiboot info version number</span> */
+  multiboot_uint32_t flags;
+
+  /* <span class="roman">Available memory from BIOS</span> */
+  multiboot_uint32_t mem_lower;
+  multiboot_uint32_t mem_upper;
+
+  /* <span class="roman">&quot;root&quot; partition</span> */
+  multiboot_uint32_t boot_device;
+
+  /* <span class="roman">Kernel command line</span> */
+  multiboot_uint32_t cmdline;
+
+  /* <span class="roman">Boot-Module list</span> */
+  multiboot_uint32_t mods_count;
+  multiboot_uint32_t mods_addr;
+
+  union
+  {
+    multiboot_aout_symbol_table_t aout_sym;
+    multiboot_elf_section_header_table_t elf_sec;
+  } u;
+
+  /* <span class="roman">Memory Mapping buffer</span> */
+  multiboot_uint32_t mmap_length;
+  multiboot_uint32_t mmap_addr;
+
+  /* <span class="roman">Drive Info buffer</span> */
+  multiboot_uint32_t drives_length;
+  multiboot_uint32_t drives_addr;
+
+  /* <span class="roman">ROM configuration table</span> */
+  multiboot_uint32_t config_table;
+
+  /* <span class="roman">Boot Loader Name</span> */
+  multiboot_uint32_t boot_loader_name;
+
+  /* <span class="roman">APM table</span> */
+  multiboot_uint32_t apm_table;
+
+  /* <span class="roman">Video</span> */
+  multiboot_uint32_t vbe_control_info;
+  multiboot_uint32_t vbe_mode_info;
+  multiboot_uint16_t vbe_mode;
+  multiboot_uint16_t vbe_interface_seg;
+  multiboot_uint16_t vbe_interface_off;
+  multiboot_uint16_t vbe_interface_len;
+
+  multiboot_uint64_t framebuffer_addr;
+  multiboot_uint32_t framebuffer_pitch;
+  multiboot_uint32_t framebuffer_width;
+  multiboot_uint32_t framebuffer_height;
+  multiboot_uint8_t framebuffer_bpp;
+#define MULTIBOOT_FRAMEBUFFER_TYPE_INDEXED 0
+#define MULTIBOOT_FRAMEBUFFER_TYPE_RGB     1
+#define MULTIBOOT_FRAMEBUFFER_TYPE_EGA_TEXT     2
+  multiboot_uint8_t framebuffer_type;
+  union
+  {
+    struct
+    {
+      multiboot_uint32_t framebuffer_palette_addr;
+      multiboot_uint16_t framebuffer_palette_num_colors;
+    };
+    struct
+    {
+      multiboot_uint8_t framebuffer_red_field_position;
+      multiboot_uint8_t framebuffer_red_mask_size;
+      multiboot_uint8_t framebuffer_green_field_position;
+      multiboot_uint8_t framebuffer_green_mask_size;
+      multiboot_uint8_t framebuffer_blue_field_position;
+      multiboot_uint8_t framebuffer_blue_mask_size;
+    };
+  };
+};
+typedef struct multiboot_info multiboot_info_t;
+
+struct multiboot_color
+{
+  multiboot_uint8_t red;
+  multiboot_uint8_t green;
+  multiboot_uint8_t blue;
+};
+
+struct multiboot_mmap_entry
+{
+  multiboot_uint32_t size;
+  multiboot_uint64_t addr;
+  multiboot_uint64_t len;
+#define MULTIBOOT_MEMORY_AVAILABLE              1
+#define MULTIBOOT_MEMORY_RESERVED               2
+#define MULTIBOOT_MEMORY_ACPI_RECLAIMABLE       3
+#define MULTIBOOT_MEMORY_NVS                    4
+#define MULTIBOOT_MEMORY_BADRAM                 5
+  multiboot_uint32_t type;
+} __attribute__((packed));
+typedef struct multiboot_mmap_entry multiboot_memory_map_t;
+
+struct multiboot_mod_list
+{
+  /* <span class="roman">the memory used goes from bytes &rsquo;mod_start&rsquo; to &rsquo;mod_end-1&rsquo; inclusive</span> */
+  multiboot_uint32_t mod_start;
+  multiboot_uint32_t mod_end;
+
+  /* <span class="roman">Module command line</span> */
+  multiboot_uint32_t cmdline;
+
+  /* <span class="roman">padding to take it to 16 bytes (must be zero)</span> */
+  multiboot_uint32_t pad;
+};
+typedef struct multiboot_mod_list multiboot_module_t;
+
+/* <span class="roman">APM BIOS info.</span> */
+struct multiboot_apm_info
+{
+  multiboot_uint16_t version;
+  multiboot_uint16_t cseg;
+  multiboot_uint32_t offset;
+  multiboot_uint16_t cseg_16;
+  multiboot_uint16_t dseg;
+  multiboot_uint16_t flags;
+  multiboot_uint16_t cseg_len;
+  multiboot_uint16_t cseg_16_len;
+  multiboot_uint16_t dseg_len;
+};
+
+#endif /* <span class="roman">! ASM_FILE</span> */
+
+#endif /* <span class="roman">! MULTIBOOT_HEADER</span> */
+</pre></div>
+
+
+<hr>
+<a name="boot_002eS"></a>
+<div class="header">
+<p>
+Next: <a href="#kernel_002ec" accesskey="n" rel="next">kernel.c</a>, Previous: <a href="#multiboot_002eh" accesskey="p" rel="prev">multiboot.h</a>, Up: <a href="#Example-OS-code" accesskey="u" rel="up">Example OS code</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="boot_002eS-1"></a>
+<h4 class="subsection">4.3.2 boot.S</h4>
+
+<p>In the file <samp>boot.S</samp>:
+</p>
+<div class="example">
+<pre class="example">/* <span class="roman">boot.S - bootstrap the kernel</span> */
+/* <span class="roman">Copyright (C) 1999, 2001, 2010  Free Software Foundation, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+</span> */
+
+#define ASM_FILE        1
+#include &lt;multiboot.h&gt;
+
+/* <span class="roman">C symbol format. HAVE_ASM_USCORE is defined by configure.</span> */
+#ifdef HAVE_ASM_USCORE
+# define EXT_C(sym)                     _ ## sym
+#else
+# define EXT_C(sym)                     sym
+#endif
+
+/* <span class="roman">The size of our stack (16KB).</span> */
+#define STACK_SIZE                      0x4000
+
+/* <span class="roman">The flags for the Multiboot header.</span> */
+#ifdef __ELF__
+# define AOUT_KLUDGE 0
+#else
+# define AOUT_KLUDGE MULTIBOOT_AOUT_KLUDGE
+#endif
+#define MULTIBOOT_HEADER_FLAGS                  MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO | MULTIBOOT_VIDEO_MODE | AOUT_KLUDGE
+        
+        .text
+
+        .globl  start, _start
+start:
+_start:
+        jmp     multiboot_entry
+
+        /* <span class="roman">Align 32 bits boundary.</span> */
+        .align  4
+        
+        /* <span class="roman">Multiboot header.</span> */
+multiboot_header:
+        /* <span class="roman">magic</span> */
+        .long   MULTIBOOT_HEADER_MAGIC
+        /* <span class="roman">flags</span> */
+        .long   MULTIBOOT_HEADER_FLAGS
+        /* <span class="roman">checksum</span> */
+        .long   -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
+#ifndef __ELF__
+        /* <span class="roman">header_addr</span> */
+        .long   multiboot_header
+        /* <span class="roman">load_addr</span> */
+        .long   _start
+        /* <span class="roman">load_end_addr</span> */
+        .long   _edata
+        /* <span class="roman">bss_end_addr</span> */
+        .long   _end
+        /* <span class="roman">entry_addr</span> */
+        .long   multiboot_entry
+#else /* <span class="roman">! __ELF__</span> */
+        .long   0
+        .long   0
+        .long   0
+        .long   0
+        .long   0       
+#endif /* <span class="roman">__ELF__</span> */
+        .long 0
+        .long 1024
+        .long 768
+        .long 32
+
+multiboot_entry:
+        /* <span class="roman">Initialize the stack pointer.</span> */
+        movl    $(stack + STACK_SIZE), %esp
+
+        /* <span class="roman">Reset EFLAGS.</span> */
+        pushl   $0
+        popf
+
+        /* <span class="roman">Push the pointer to the Multiboot information structure.</span> */
+        pushl   %ebx
+        /* <span class="roman">Push the magic value.</span> */
+        pushl   %eax
+
+        /* <span class="roman">Now enter the C main function...</span> */
+        call    EXT_C(cmain)
+
+        /* <span class="roman">Halt.</span> */
+        pushl   $halt_message
+        call    EXT_C(printf)
+        
+loop:   hlt
+        jmp     loop
+
+halt_message:
+        .asciz  &quot;Halted.&quot;
+
+        /* <span class="roman">Our stack area.</span> */
+        .comm   stack, STACK_SIZE
+</pre></div>
+
+
+<hr>
+<a name="kernel_002ec"></a>
+<div class="header">
+<p>
+Next: <a href="#Other-Multiboot-kernels" accesskey="n" rel="next">Other Multiboot kernels</a>, Previous: <a href="#boot_002eS" accesskey="p" rel="prev">boot.S</a>, Up: <a href="#Example-OS-code" accesskey="u" rel="up">Example OS code</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="kernel_002ec-1"></a>
+<h4 class="subsection">4.3.3 kernel.c</h4>
+
+<p>And, in the file <samp>kernel.c</samp>:
+</p>
+<div class="example">
+<pre class="example">/* <span class="roman">kernel.c - the C part of the kernel</span> */
+/* <span class="roman">Copyright (C) 1999, 2010  Free Software Foundation, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+</span> */
+
+#include &lt;multiboot.h&gt;
+
+/* <span class="roman">Macros.</span> */
+
+/* <span class="roman">Check if the bit BIT in FLAGS is set.</span> */
+#define CHECK_FLAG(flags,bit)   ((flags) &amp; (1 &lt;&lt; (bit)))
+
+/* <span class="roman">Some screen stuff.</span> */
+/* <span class="roman">The number of columns.</span> */
+#define COLUMNS                 80
+/* <span class="roman">The number of lines.</span> */
+#define LINES                   24
+/* <span class="roman">The attribute of an character.</span> */
+#define ATTRIBUTE               7
+/* <span class="roman">The video memory address.</span> */
+#define VIDEO                   0xB8000
+
+/* <span class="roman">Variables.</span> */
+/* <span class="roman">Save the X position.</span> */
+static int xpos;
+/* <span class="roman">Save the Y position.</span> */
+static int ypos;
+/* <span class="roman">Point to the video memory.</span> */
+static volatile unsigned char *video;
+
+/* <span class="roman">Forward declarations.</span> */
+void cmain (unsigned long magic, unsigned long addr);
+static void cls (void);
+static void itoa (char *buf, int base, int d);
+static void putchar (int c);
+void printf (const char *format, ...);
+
+/* <span class="roman">Check if MAGIC is valid and print the Multiboot information structure
+   pointed by ADDR.</span> */
+void
+cmain (unsigned long magic, unsigned long addr)
+{
+  multiboot_info_t *mbi;
+  
+  /* <span class="roman">Clear the screen.</span> */
+  cls ();
+
+  /* <span class="roman">Am I booted by a Multiboot-compliant boot loader?</span> */
+  if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
+    {
+      printf (&quot;Invalid magic number: 0x%x\n&quot;, (unsigned) magic);
+      return;
+    }
+
+  /* <span class="roman">Set MBI to the address of the Multiboot information structure.</span> */
+  mbi = (multiboot_info_t *) addr;
+
+  /* <span class="roman">Print out the flags.</span> */
+  printf (&quot;flags = 0x%x\n&quot;, (unsigned) mbi-&gt;flags);
+
+  /* <span class="roman">Are mem_* valid?</span> */
+  if (CHECK_FLAG (mbi-&gt;flags, 0))
+    printf (&quot;mem_lower = %uKB, mem_upper = %uKB\n&quot;,
+            (unsigned) mbi-&gt;mem_lower, (unsigned) mbi-&gt;mem_upper);
+
+  /* <span class="roman">Is boot_device valid?</span> */
+  if (CHECK_FLAG (mbi-&gt;flags, 1))
+    printf (&quot;boot_device = 0x%x\n&quot;, (unsigned) mbi-&gt;boot_device);
+  
+  /* <span class="roman">Is the command line passed?</span> */
+  if (CHECK_FLAG (mbi-&gt;flags, 2))
+    printf (&quot;cmdline = %s\n&quot;, (char *) mbi-&gt;cmdline);
+
+  /* <span class="roman">Are mods_* valid?</span> */
+  if (CHECK_FLAG (mbi-&gt;flags, 3))
+    {
+      multiboot_module_t *mod;
+      int i;
+      
+      printf (&quot;mods_count = %d, mods_addr = 0x%x\n&quot;,
+              (int) mbi-&gt;mods_count, (int) mbi-&gt;mods_addr);
+      for (i = 0, mod = (multiboot_module_t *) mbi-&gt;mods_addr;
+           i &lt; mbi-&gt;mods_count;
+           i++, mod++)
+        printf (&quot; mod_start = 0x%x, mod_end = 0x%x, cmdline = %s\n&quot;,
+                (unsigned) mod-&gt;mod_start,
+                (unsigned) mod-&gt;mod_end,
+                (char *) mod-&gt;cmdline);
+    }
+
+  /* <span class="roman">Bits 4 and 5 are mutually exclusive!</span> */
+  if (CHECK_FLAG (mbi-&gt;flags, 4) &amp;&amp; CHECK_FLAG (mbi-&gt;flags, 5))
+    {
+      printf (&quot;Both bits 4 and 5 are set.\n&quot;);
+      return;
+    }
+
+  /* <span class="roman">Is the symbol table of a.out valid?</span> */
+  if (CHECK_FLAG (mbi-&gt;flags, 4))
+    {
+      multiboot_aout_symbol_table_t *multiboot_aout_sym = &amp;(mbi-&gt;u.aout_sym);
+      
+      printf (&quot;multiboot_aout_symbol_table: tabsize = 0x%0x, &quot;
+              &quot;strsize = 0x%x, addr = 0x%x\n&quot;,
+              (unsigned) multiboot_aout_sym-&gt;tabsize,
+              (unsigned) multiboot_aout_sym-&gt;strsize,
+              (unsigned) multiboot_aout_sym-&gt;addr);
+    }
+
+  /* <span class="roman">Is the section header table of ELF valid?</span> */
+  if (CHECK_FLAG (mbi-&gt;flags, 5))
+    {
+      multiboot_elf_section_header_table_t *multiboot_elf_sec = &amp;(mbi-&gt;u.elf_sec);
+
+      printf (&quot;multiboot_elf_sec: num = %u, size = 0x%x,&quot;
+              &quot; addr = 0x%x, shndx = 0x%x\n&quot;,
+              (unsigned) multiboot_elf_sec-&gt;num, (unsigned) multiboot_elf_sec-&gt;size,
+              (unsigned) multiboot_elf_sec-&gt;addr, (unsigned) multiboot_elf_sec-&gt;shndx);
+    }
+
+  /* <span class="roman">Are mmap_* valid?</span> */
+  if (CHECK_FLAG (mbi-&gt;flags, 6))
+    {
+      multiboot_memory_map_t *mmap;
+      
+      printf (&quot;mmap_addr = 0x%x, mmap_length = 0x%x\n&quot;,
+              (unsigned) mbi-&gt;mmap_addr, (unsigned) mbi-&gt;mmap_length);
+      for (mmap = (multiboot_memory_map_t *) mbi-&gt;mmap_addr;
+           (unsigned long) mmap &lt; mbi-&gt;mmap_addr + mbi-&gt;mmap_length;
+           mmap = (multiboot_memory_map_t *) ((unsigned long) mmap
+                                    + mmap-&gt;size + sizeof (mmap-&gt;size)))
+        printf (&quot; size = 0x%x, base_addr = 0x%x%08x,&quot;
+                &quot; length = 0x%x%08x, type = 0x%x\n&quot;,
+                (unsigned) mmap-&gt;size,
+                (unsigned) (mmap-&gt;addr &gt;&gt; 32),
+                (unsigned) (mmap-&gt;addr &amp; 0xffffffff),
+                (unsigned) (mmap-&gt;len &gt;&gt; 32),
+                (unsigned) (mmap-&gt;len &amp; 0xffffffff),
+                (unsigned) mmap-&gt;type);
+    }
+
+  /* <span class="roman">Draw diagonal blue line.</span> */
+  if (CHECK_FLAG (mbi-&gt;flags, 12))
+    {
+      multiboot_uint32_t color;
+      unsigned i;
+      void *fb = (void *) (unsigned long) mbi-&gt;framebuffer_addr;
+
+      switch (mbi-&gt;framebuffer_type)
+        {
+        case MULTIBOOT_FRAMEBUFFER_TYPE_INDEXED:
+          {
+            unsigned best_distance, distance;
+            struct multiboot_color *palette;
+            
+            palette = (struct multiboot_color *) mbi-&gt;framebuffer_palette_addr;
+
+            color = 0;
+            best_distance = 4*256*256;
+            
+            for (i = 0; i &lt; mbi-&gt;framebuffer_palette_num_colors; i++)
+              {
+                distance = (0xff - palette[i].blue) * (0xff - palette[i].blue)
+                  + palette[i].red * palette[i].red
+                  + palette[i].green * palette[i].green;
+                if (distance &lt; best_distance)
+                  {
+                    color = i;
+                    best_distance = distance;
+                  }
+              }
+          }
+          break;
+
+        case MULTIBOOT_FRAMEBUFFER_TYPE_RGB:
+          color = ((1 &lt;&lt; mbi-&gt;framebuffer_blue_mask_size) - 1) 
+            &lt;&lt; mbi-&gt;framebuffer_blue_field_position;
+          break;
+
+        case MULTIBOOT_FRAMEBUFFER_TYPE_EGA_TEXT:
+          color = '\\' | 0x0100;
+          break;
+
+        default:
+          color = 0xffffffff;
+          break;
+        }
+      for (i = 0; i &lt; mbi-&gt;framebuffer_width
+             &amp;&amp; i &lt; mbi-&gt;framebuffer_height; i++)
+        {
+          switch (mbi-&gt;framebuffer_bpp)
+            {
+            case 8:
+              {
+                multiboot_uint8_t *pixel = fb + mbi-&gt;framebuffer_pitch * i + i;
+                *pixel = color;
+              }
+              break;
+            case 15:
+            case 16:
+              {
+                multiboot_uint16_t *pixel
+                  = fb + mbi-&gt;framebuffer_pitch * i + 2 * i;
+                *pixel = color;
+              }
+              break;
+            case 24:
+              {
+                multiboot_uint32_t *pixel
+                  = fb + mbi-&gt;framebuffer_pitch * i + 3 * i;
+                *pixel = (color &amp; 0xffffff) | (*pixel &amp; 0xff000000);
+              }
+              break;
+
+            case 32:
+              {
+                multiboot_uint32_t *pixel
+                  = fb + mbi-&gt;framebuffer_pitch * i + 4 * i;
+                *pixel = color;
+              }
+              break;
+            }
+        }
+    }
+
+}    
+
+/* <span class="roman">Clear the screen and initialize VIDEO, XPOS and YPOS.</span> */
+static void
+cls (void)
+{
+  int i;
+
+  video = (unsigned char *) VIDEO;
+  
+  for (i = 0; i &lt; COLUMNS * LINES * 2; i++)
+    *(video + i) = 0;
+
+  xpos = 0;
+  ypos = 0;
+}
+
+/* <span class="roman">Convert the integer D to a string and save the string in BUF. If
+   BASE is equal to &rsquo;d&rsquo;, interpret that D is decimal, and if BASE is
+   equal to &rsquo;x&rsquo;, interpret that D is hexadecimal.</span> */
+static void
+itoa (char *buf, int base, int d)
+{
+  char *p = buf;
+  char *p1, *p2;
+  unsigned long ud = d;
+  int divisor = 10;
+  
+  /* <span class="roman">If %d is specified and D is minus, put &lsquo;-&rsquo; in the head.</span> */
+  if (base == 'd' &amp;&amp; d &lt; 0)
+    {
+      *p++ = '-';
+      buf++;
+      ud = -d;
+    }
+  else if (base == 'x')
+    divisor = 16;
+
+  /* <span class="roman">Divide UD by DIVISOR until UD == 0.</span> */
+  do
+    {
+      int remainder = ud % divisor;
+      
+      *p++ = (remainder &lt; 10) ? remainder + '0' : remainder + 'a' - 10;
+    }
+  while (ud /= divisor);
+
+  /* <span class="roman">Terminate BUF.</span> */
+  *p = 0;
+  
+  /* <span class="roman">Reverse BUF.</span> */
+  p1 = buf;
+  p2 = p - 1;
+  while (p1 &lt; p2)
+    {
+      char tmp = *p1;
+      *p1 = *p2;
+      *p2 = tmp;
+      p1++;
+      p2--;
+    }
+}
+
+/* <span class="roman">Put the character C on the screen.</span> */
+static void
+putchar (int c)
+{
+  if (c == '\n' || c == '\r')
+    {
+    newline:
+      xpos = 0;
+      ypos++;
+      if (ypos &gt;= LINES)
+        ypos = 0;
+      return;
+    }
+
+  *(video + (xpos + ypos * COLUMNS) * 2) = c &amp; 0xFF;
+  *(video + (xpos + ypos * COLUMNS) * 2 + 1) = ATTRIBUTE;
+
+  xpos++;
+  if (xpos &gt;= COLUMNS)
+    goto newline;
+}
+
+/* <span class="roman">Format a string and print it on the screen, just like the libc
+   function printf.</span> */
+void
+printf (const char *format, ...)
+{
+  char **arg = (char **) &amp;format;
+  int c;
+  char buf[20];
+
+  arg++;
+  
+  while ((c = *format++) != 0)
+    {
+      if (c != '%')
+        putchar (c);
+      else
+        {
+          char *p, *p2;
+          int pad0 = 0, pad = 0;
+          
+          c = *format++;
+          if (c == '0')
+            {
+              pad0 = 1;
+              c = *format++;
+            }
+
+          if (c &gt;= '0' &amp;&amp; c &lt;= '9')
+            {
+              pad = c - '0';
+              c = *format++;
+            }
+
+          switch (c)
+            {
+            case 'd':
+            case 'u':
+            case 'x':
+              itoa (buf, c, *((int *) arg++));
+              p = buf;
+              goto string;
+              break;
+
+            case 's':
+              p = *arg++;
+              if (! p)
+                p = &quot;(null)&quot;;
+
+            string:
+              for (p2 = p; *p2; p2++);
+              for (; p2 &lt; p + pad; p2++)
+                putchar (pad0 ? '0' : ' ');
+              while (*p)
+                putchar (*p++);
+              break;
+
+            default:
+              putchar (*((int *) arg++));
+              break;
+            }
+        }
+    }
+}
+</pre></div>
+
+
+<hr>
+<a name="Other-Multiboot-kernels"></a>
+<div class="header">
+<p>
+Previous: <a href="#kernel_002ec" accesskey="p" rel="prev">kernel.c</a>, Up: <a href="#Example-OS-code" accesskey="u" rel="up">Example OS code</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Other-Multiboot-kernels-1"></a>
+<h4 class="subsection">4.3.4 Other Multiboot kernels</h4>
+
+<p>Other useful information should be available in Multiboot kernels, such
+as GNU Mach and Fiasco <a href="http://os.inf.tu-dresden.de/fiasco/">http://os.inf.tu-dresden.de/fiasco/</a>. And,
+it is worth mentioning the OSKit
+<a href="http://www.cs.utah.edu/projects/flux/oskit/">http://www.cs.utah.edu/projects/flux/oskit/</a>, which provides a
+library supporting the specification.
+</p>
+
+<hr>
+<a name="Example-boot-loader-code"></a>
+<div class="header">
+<p>
+Previous: <a href="#Example-OS-code" accesskey="p" rel="prev">Example OS code</a>, Up: <a href="#Examples" accesskey="u" rel="up">Examples</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Example-boot-loader-code-1"></a>
+<h3 class="section">4.4 Example boot loader code</h3>
+
+<p>The GNU GRUB (see <a href="http://www.gnu.org/software/grub/manual/grub.html#Top">GRUB</a> in <cite>The GRUB manual</cite>) project
+is a Multiboot-compliant boot loader, supporting all required and
+many optional features present in this specification. A public release has
+not been made, but the test release is available from:
+</p>
+<p><a href="ftp://alpha.gnu.org/gnu/grub">ftp://alpha.gnu.org/gnu/grub</a>
+</p>
+<p>See the webpage <a href="http://www.gnu.org/software/grub/grub.html">http://www.gnu.org/software/grub/grub.html</a>, for
+more information.
+</p>
+
+<hr>
+<a name="History"></a>
+<div class="header">
+<p>
+Next: <a href="#Invoking-mbchk" accesskey="n" rel="next">Invoking mbchk</a>, Previous: <a href="#Examples" accesskey="p" rel="prev">Examples</a>, Up: <a href="#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="The-change-log-of-this-specification"></a>
+<h2 class="chapter">5 The change log of this specification</h2>
+
+<dl compact="compact">
+<dt>0.7</dt>
+<dd><ul>
+<li> <em>Multiboot Standard</em> is renamed to <em>Multiboot Specification</em>.
+
+</li><li> Graphics fields are added to Multiboot header.
+
+</li><li> BIOS drive information, BIOS configuration table, the name of a boot
+loader, APM information, and graphics information are added to Multiboot
+information.
+
+</li><li> Rewritten in Texinfo format.
+
+</li><li> Rewritten, using more strict words.
+
+</li><li> The maintainer changes to the GNU GRUB maintainer team
+<a href="mailto:bug-grub@gnu.org">bug-grub@gnu.org</a>, from Bryan Ford and Erich Stefan Boleyn.
+
+</li><li> The byte order of the &lsquo;<samp>boot_device</samp>&rsquo; in Multiboot information is
+reversed. This was a mistake.
+
+</li><li> The offset of the address fields were wrong.
+
+</li><li> The format is adapted to a newer Texinfo, and the version number is
+specified more explicitly in the title.
+</li></ul>
+
+</dd>
+<dt>0.6</dt>
+<dd><ul>
+<li> A few wording changes.
+
+</li><li> Header checksum.
+
+</li><li> Classification of machine state passed to an operating system.
+</li></ul>
+
+</dd>
+<dt>0.5</dt>
+<dd><ul>
+<li> Name change.
+</li></ul>
+
+</dd>
+<dt>0.4</dt>
+<dd><ul>
+<li> Major changes plus HTMLification.
+</li></ul>
+</dd>
+</dl>
+
+<hr>
+<a name="Invoking-mbchk"></a>
+<div class="header">
+<p>
+Next: <a href="#Index" accesskey="n" rel="next">Index</a>, Previous: <a href="#History" accesskey="p" rel="prev">History</a>, Up: <a href="#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Invoking-mbchk-1"></a>
+<h2 class="chapter">6 Invoking mbchk</h2>
+
+<p>The program <code>mbchk</code> checks for the format of a Multiboot
+kernel. We recommend using this program before booting your own kernel.
+</p>
+<p><code>mbchk</code> accepts the following options:
+</p>
+<dl compact="compact">
+<dt><samp>--help</samp></dt>
+<dd><p>Print a summary of the command-line options and exit.
+</p>
+</dd>
+<dt><samp>--version</samp></dt>
+<dd><p>Print the version number of GRUB and exit.
+</p>
+</dd>
+<dt><samp>--quiet</samp></dt>
+<dd><p>Suppress all normal output.
+</p></dd>
+</dl>
+
+
+
+<hr>
+<a name="Index"></a>
+<div class="header">
+<p>
+Previous: <a href="#Invoking-mbchk" accesskey="p" rel="prev">Invoking mbchk</a>, Up: <a href="#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<a name="Index-1"></a>
+<h2 class="unnumbered">Index</h2>
+
+
+<a name="SEC_Contents"></a>
+<h2 class="contents-heading">Table of Contents</h2>
+
+<div class="contents">
+
+<ul class="no-bullet">
+  <li><a name="toc-Introduction-to-Multiboot-Specification" href="#Overview">1 Introduction to Multiboot Specification</a>
+  <ul class="no-bullet">
+    <li><a name="toc-The-background-of-Multiboot-Specification" href="#Motivation">1.1 The background of Multiboot Specification</a></li>
+    <li><a name="toc-The-target-architecture" href="#Architecture">1.2 The target architecture</a></li>
+    <li><a name="toc-The-target-operating-systems" href="#Operating-systems">1.3 The target operating systems</a></li>
+    <li><a name="toc-Boot-sources-1" href="#Boot-sources">1.4 Boot sources</a></li>
+    <li><a name="toc-Configure-an-operating-system-at-boot_002dtime" href="#Boot_002dtime-configuration">1.5 Configure an operating system at boot-time</a></li>
+    <li><a name="toc-How-to-make-OS-development-easier" href="#Convenience-to-operating-systems">1.6 How to make OS development easier</a></li>
+    <li><a name="toc-Boot-modules-1" href="#Boot-modules">1.7 Boot modules</a></li>
+  </ul></li>
+  <li><a name="toc-The-definitions-of-terms-used-through-the-specification" href="#Terminology">2 The definitions of terms used through the specification</a></li>
+  <li><a name="toc-The-exact-definitions-of-Multiboot-Specification" href="#Specification">3 The exact definitions of Multiboot Specification</a>
+  <ul class="no-bullet">
+    <li><a name="toc-OS-image-format-1" href="#OS-image-format">3.1 OS image format</a>
+    <ul class="no-bullet">
+      <li><a name="toc-The-layout-of-Multiboot-header" href="#Header-layout">3.1.1 The layout of Multiboot header</a></li>
+      <li><a name="toc-The-magic-fields-of-Multiboot-header" href="#Header-magic-fields">3.1.2 The magic fields of Multiboot header</a></li>
+      <li><a name="toc-The-address-fields-of-Multiboot-header" href="#Header-address-fields">3.1.3 The address fields of Multiboot header</a></li>
+      <li><a name="toc-The-graphics-fields-of-Multiboot-header" href="#Header-graphics-fields">3.1.4 The graphics fields of Multiboot header</a></li>
+    </ul></li>
+    <li><a name="toc-Machine-state-1" href="#Machine-state">3.2 Machine state</a></li>
+    <li><a name="toc-Boot-information-format-1" href="#Boot-information-format">3.3 Boot information format</a></li>
+  </ul></li>
+  <li><a name="toc-Examples-1" href="#Examples">4 Examples</a>
+  <ul class="no-bullet">
+    <li><a name="toc-Notes-on-PC-1" href="#Notes-on-PC">4.1 Notes on PC</a></li>
+    <li><a name="toc-BIOS-device-mapping-techniques-1" href="#BIOS-device-mapping-techniques">4.2 BIOS device mapping techniques</a>
+    <ul class="no-bullet">
+      <li><a name="toc-Data-comparison-technique-1" href="#Data-comparison-technique">4.2.1 Data comparison technique</a></li>
+      <li><a name="toc-I_002fO-restriction-technique-1" href="#I_002fO-restriction-technique">4.2.2 I/O restriction technique</a></li>
+    </ul></li>
+    <li><a name="toc-Example-OS-code-1" href="#Example-OS-code">4.3 Example OS code</a>
+    <ul class="no-bullet">
+      <li><a name="toc-multiboot_002eh-1" href="#multiboot_002eh">4.3.1 multiboot.h</a></li>
+      <li><a name="toc-boot_002eS-1" href="#boot_002eS">4.3.2 boot.S</a></li>
+      <li><a name="toc-kernel_002ec-1" href="#kernel_002ec">4.3.3 kernel.c</a></li>
+      <li><a name="toc-Other-Multiboot-kernels-1" href="#Other-Multiboot-kernels">4.3.4 Other Multiboot kernels</a></li>
+    </ul></li>
+    <li><a name="toc-Example-boot-loader-code-1" href="#Example-boot-loader-code">4.4 Example boot loader code</a></li>
+  </ul></li>
+  <li><a name="toc-The-change-log-of-this-specification" href="#History">5 The change log of this specification</a></li>
+  <li><a name="toc-Invoking-mbchk-1" href="#Invoking-mbchk">6 Invoking mbchk</a></li>
+  <li><a name="toc-Index-1" href="#Index">Index</a></li>
+</ul>
+</div>
+
+<hr>
+
+
+
+</body>
+</html>
