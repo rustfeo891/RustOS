@@ -1,0 +1,3 @@
+if grub-file --is-x86-multiboot isodir/boot/myos; then
+  echo "kernel is multiboot"
+fi
