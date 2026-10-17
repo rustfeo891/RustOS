@@ -3,12 +3,14 @@
 
 use core::ops::Add;
 use core::panic::PanicInfo;
+use core::arch::asm;
 //use core::ptr::write_volatile;
 
 #[panic_handler]
 fn panic(_panic:&PanicInfo)->!{
    loop{}
 }
+
 
 #[repr(C)]
 pub enum VgaColor{
@@ -89,15 +91,15 @@ impl Terminal{
       *(self.terminal_buffer.add(index))=vga_entry(c,color);
    }
    pub unsafe extern "C" fn TerminalPutChar(&mut self,c:u8){
-      self.TerminalPutEntryAt(c,self.terminal_color,self.terminal_column,self.terminal_row);
       self.terminal_column+=1;
-      if self.terminal_column>=VgaWidth{
+      if self.terminal_column>=VgaWidth||c==10{
          self.terminal_column=0;
          self.terminal_row+=1;
          if self.terminal_row>=VgaHeight{
             self.terminal_row=0;
          }
       }
+      self.TerminalPutEntryAt(c,VgaColor::VgaColorLightCyan as u8,self.terminal_column,self.terminal_row);
    }
    pub unsafe extern "C" fn TerminalWrite(&mut self,data:*const u8,size:usize){
       for i in 0..size{
@@ -107,13 +109,38 @@ impl Terminal{
    pub unsafe extern "C" fn TerminalWriteString(&mut self,data:*const u8,len:usize){
       self.TerminalWrite(data,len);
    }
+   pub unsafe fn TerminalWriteHexU32(&mut self,data:u32){
+      self.TerminalPutChar(b'0');
+      self.TerminalPutChar(b'x');
+      for i in (0..8).rev(){
+         let nib:u8=(data>>(4*i) & 0xF).try_into().unwrap();
+         let mut c:u8=if nib <10{
+            nib+b'0'
+         }else{
+             (nib-10)+b'A'
+         };
+         self.TerminalPutChar(c);
+      }
+   }
+}
+
+#[repr(C)]
+struct MultibootInfo{
+   flags:u32,
+   mem_lower:u32,
+   mem_upper:u32,
+   boot_device:u32
 }
 
 #[unsafe(no_mangle)]
-pub unsafe  extern "C" fn kernel_main(){
+pub unsafe  extern "C" fn kernel_main(magic:u32,mbi:*const MultibootInfo){
    let mut terminal=Terminal::default_new();
    terminal.TerminalInit();
-   let msg=b"Hello, World";
-   terminal.TerminalWriteString(msg.as_ptr(),msg.len());
+   let msg=b"Hello, World\nGoodBye\nXDDDDDDDD";
+   terminal.TerminalWriteHexU32(magic);
+   terminal.terminal_column=VgaWidth;
+   terminal.TerminalWriteHexU32((*mbi).flags);
+   //terminal.TerminalWriteString(msg.as_ptr(),msg.len());
+   
 }
 

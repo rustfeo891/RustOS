@@ -16,6 +16,6 @@ echo "---------------------"
 rm -rf isodir
 mkdir -p isodir/boot/grub
 cp "$KERNEL"  .
-cp "$KERNEL" isodir/boot/myos
+cp "$KERNEL" isodir/boot/ros
 cp grub.cfg isodir/boot/grub/grub.cfg
-grub-mkrescue -o ros.iso isodir
+grub-mkrescue -d /usr/lib/grub/i386-pc -o ros.iso isodir

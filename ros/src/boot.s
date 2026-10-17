@@ -31,6 +31,8 @@ stack_top:
 .type _start, @function
 _start:
    mov $stack_top,%esp
+   push %ebx #sec arg
+   push %eax #fst arg
    call kernel_main
    cli
 1: hlt
