@@ -8,3 +8,7 @@ Progress
 Can boot >_<
 
 <img src="img/firststep.png">
+
+Can serial ^_^
+
+<img src="img/firstserial.png">
