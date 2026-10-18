@@ -1,10 +1,17 @@
 #![no_std]
 #![no_main]
 
+//#[path="io.rs"]
+mod io;
+mod serial;
+
+mod test;
+
 use core::ops::Add;
 use core::panic::PanicInfo;
 use core::arch::asm;
 //use core::ptr::write_volatile;
+
 
 #[panic_handler]
 fn panic(_panic:&PanicInfo)->!{
@@ -69,7 +76,7 @@ impl Terminal{
           terminal_color:0
       }
    }
-   pub unsafe extern "C" fn TerminalInit(&mut self){
+   pub unsafe extern "C" fn init(&mut self){
       self.terminal_row=0;
       self.terminal_column=0;
       self.terminal_buffer=VgaMemory as *mut u16;
@@ -83,14 +90,14 @@ impl Terminal{
          }
       }
    }
-   pub extern "C" fn TerminalColor(&mut self,color:u8){
+   pub extern "C" fn color(&mut self,color:u8){
       self.terminal_color=color;
    }
-   pub unsafe extern "C" fn TerminalPutEntryAt(&self,c:u8,color:u8,x:usize,y:usize){
+   pub unsafe extern "C" fn putEntryAt(&self,c:u8,color:u8,x:usize,y:usize){
       let index=y*VgaWidth+x;
       *(self.terminal_buffer.add(index))=vga_entry(c,color);
    }
-   pub unsafe extern "C" fn TerminalPutChar(&mut self,c:u8){
+   pub unsafe extern "C" fn putChar(&mut self,c:u8){
       self.terminal_column+=1;
       if self.terminal_column>=VgaWidth||c==10{
          self.terminal_column=0;
@@ -99,19 +106,19 @@ impl Terminal{
             self.terminal_row=0;
          }
       }
-      self.TerminalPutEntryAt(c,VgaColor::VgaColorLightCyan as u8,self.terminal_column,self.terminal_row);
+      self.putEntryAt(c,VgaColor::VgaColorLightCyan as u8,self.terminal_column,self.terminal_row);
    }
-   pub unsafe extern "C" fn TerminalWrite(&mut self,data:*const u8,size:usize){
+   pub unsafe extern "C" fn write(&mut self,data:*const u8,size:usize){
       for i in 0..size{
-         self.TerminalPutChar(*data.add(i));
+         self.putChar(*data.add(i));
       }
    }
-   pub unsafe extern "C" fn TerminalWriteString(&mut self,data:*const u8,len:usize){
-      self.TerminalWrite(data,len);
+   pub unsafe extern "C" fn writeString(&mut self,data:*const u8,len:usize){
+      self.write(data,len);
    }
-   pub unsafe fn TerminalWriteHexU32(&mut self,data:u32){
-      self.TerminalPutChar(b'0');
-      self.TerminalPutChar(b'x');
+   pub unsafe fn writeHexU32(&mut self,data:u32){
+      self.putChar(b'0');
+      self.putChar(b'x');
       for i in (0..8).rev(){
          let nib:u8=(data>>(4*i) & 0xF).try_into().unwrap();
          let mut c:u8=if nib <10{
@@ -119,7 +126,7 @@ impl Terminal{
          }else{
              (nib-10)+b'A'
          };
-         self.TerminalPutChar(c);
+         self.putChar(c);
       }
    }
 }
@@ -135,12 +142,16 @@ struct MultibootInfo{
 #[unsafe(no_mangle)]
 pub unsafe  extern "C" fn kernel_main(magic:u32,mbi:*const MultibootInfo){
    let mut terminal=Terminal::default_new();
-   terminal.TerminalInit();
+   terminal.init();
    let msg=b"Hello, World\nGoodBye\nXDDDDDDDD";
-   terminal.TerminalWriteHexU32(magic);
-   terminal.terminal_column=VgaWidth;
-   terminal.TerminalWriteHexU32((*mbi).flags);
+   //terminal.writeString("Magic:".as_ptr(),"Magic:".len());
+   //terminal.writeHexU32(magic); //ebx Must contain the magic value ‘0x2BADB002’; the presence of this value indicates to the operating system that it was loaded by a Multiboot-compliant boot loader (e.g. as opposed to another type of boot loader that the operating system can also be loaded from).
+   //terminal.terminal_column=VgaWidth;
+   //terminal.writeHexU32((*mbi).flags);
    //terminal.TerminalWriteString(msg.as_ptr(),msg.len());
-   
+   test::serial();
 }
+
+
+
 
