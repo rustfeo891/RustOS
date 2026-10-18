@@ -5,7 +5,8 @@ set -e
 #cp boot.o ..
 cargo build --release
 
-KERNEL=/home/fe2o/mis/os/RustOS/ros/target/target/release/ros 
+#KERNEL=/home/fe2o/mis/os/RustOS/ros/target/target/release/ros 
+KERNEL=../target/target/release/ros
 
 echo "---------debug-------"
 echo "where: $KERNEL"
@@ -16,6 +17,6 @@ echo "---------------------"
 rm -rf isodir
 mkdir -p isodir/boot/grub
 cp "$KERNEL"  .
-cp "$KERNEL" isodir/boot/ros
+cp "$KERNEL" isodir/boot/RustOS
 cp grub.cfg isodir/boot/grub/grub.cfg
 grub-mkrescue -d /usr/lib/grub/i386-pc -o ros.iso isodir
