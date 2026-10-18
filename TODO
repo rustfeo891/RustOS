@@ -1,0 +1,17 @@
+[X] boot the os
+[x] enter vga text mode
+[x] support serial output
+
+[]Stop using VGA switch to use UEFI GOP OR VESA VBE
+[]load a program and run a process
+[]make a filesystem
+[]make a page table
+[]make a memory allocator
+[]make physical memory manager
+[]make a virtual memory manager
+[]make Anonymous Pipe (for ipc)
+[]achieve share memory(for high speed ipc)
+
+[]parse a multiboot header
+[]handle interrupt
+[]make a task schedular
