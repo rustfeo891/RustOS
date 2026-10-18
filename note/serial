@@ -1,0 +1,7 @@
+《linux 内核全然剖析》 include/asm/io.h 
+see https://www.cnblogs.com/tlnshuju/p/7276936.html for inb,outb implementation
+
+Serial Ports
+https://wiki.osdev.org/Serial_Ports
+
+
